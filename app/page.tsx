@@ -3,10 +3,10 @@
 import { Hero } from "@/components/hero"
 import { AnimatedBackground } from "@/components/animated-background"
 import { Spinner } from "@/components/ui/spinner"
-import { usePortfolioData } from "@/hooks/use-portfolio-data"
+import { usePortfolio } from "@/components/portfolio-context"
 
 export default function Home() {
-  const { data, language, loading } = usePortfolioData()
+  const { data, language, loading } = usePortfolio()
 
   if (loading || !data) {
     return (
