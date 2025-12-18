@@ -12,10 +12,9 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Tome Jeftimov - Full-Stack Developer",
+  title: "Tome Jeftimov Web-Portfolio",
   description:
-    "Full-Stack Developer & Marketing Graduate. Turning Ideas into Impactful Digital Realities.",
-  generator: "v0.app",
+    "Turning Ideas into Impactful Digital Realities.",
   icons: {
     icon: [
       {

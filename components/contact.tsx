@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
+import emailjs from "@emailjs/browser"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -58,16 +58,41 @@ export function Contact({ data }: ContactProps) {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission - replace with your email provider integration
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!; 
+  const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+  const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
 
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. I will get back to you soon.",
-    })
+    try {
+      const templateParams = {
+        user_name: formData.name,
+        user_phone: formData.phone,
+        user_email: formData.email,
+        message: formData.message,
+      }
 
-    setFormData({ name: "", phone: "", email: "", message: "" })
-    setIsSubmitting(false)
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        templateParams,
+        PUBLIC_KEY
+      )
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. I will get back to you soon.",
+      })
+
+      setFormData({ name: "", phone: "", email: "", message: "" })
+    } catch (error) {
+      console.error("EmailJS Error:", error)
+      toast({
+        variant: "destructive",
+        title: "Submission failed",
+        description: "There was an error sending your message. Please try again.",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
