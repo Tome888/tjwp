@@ -10,13 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
-const nameRegex = /^[A-Za-zÀ-ž\s'-]{2,50}$/;
-
-const phoneRegex = /^\+?[0-9\s()-]{7,20}$/;
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-const messageRegex = /^[\s\S]{10,1000}$/;
+const nameRegex = /^(?=.*\S)[A-Za-zÀ-ž\s'-]{2,50}$/;
+const phoneRegex = /^(?=.*\S)\+?[0-9\s()-]{7,20}$/;
+const emailRegex = /^(?=.*\S)[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const messageRegex = /^(?=.*\S)[\s\S]{10,1000}$/;
 
 interface ContactProps {
   data: {
@@ -52,7 +49,7 @@ export function Contact({ data }: ContactProps) {
           setIsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (sectionRef.current) {
@@ -63,7 +60,7 @@ export function Contact({ data }: ContactProps) {
   }, []);
 
   const validateForm = () => {
-    if (!nameRegex.test(formData.name)) {
+    if (!nameRegex.test(formData.name.trim())) {
       toast({
         variant: "destructive",
         title: "Invalid name",
@@ -72,7 +69,7 @@ export function Contact({ data }: ContactProps) {
       return false;
     }
 
-    if (formData.phone && !phoneRegex.test(formData.phone)) {
+    if (!phoneRegex.test(formData.phone.trim())) {
       toast({
         variant: "destructive",
         title: "Invalid phone number",
@@ -81,7 +78,7 @@ export function Contact({ data }: ContactProps) {
       return false;
     }
 
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(formData.email.trim())) {
       toast({
         variant: "destructive",
         title: "Invalid email",
@@ -90,7 +87,7 @@ export function Contact({ data }: ContactProps) {
       return false;
     }
 
-    if (!messageRegex.test(formData.message)) {
+    if (!messageRegex.test(formData.message.trim())) {
       toast({
         variant: "destructive",
         title: "Message too short",
@@ -111,11 +108,11 @@ export function Contact({ data }: ContactProps) {
     const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
     const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
     const bunddleMessage = `
-    Name: ${formData.name}
-    Phone: ${formData.phone}
-    Email: ${formData.email}
-    Message: ${formData.message}
-    `;
+Name: ${formData.name}
+Phone: ${formData.phone}
+Email: ${formData.email}
+Message: ${formData.message}
+`;
 
     try {
       const templateParams = {
@@ -147,7 +144,7 @@ export function Contact({ data }: ContactProps) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -189,6 +186,7 @@ export function Contact({ data }: ContactProps) {
                     placeholder={data.PhoneInput}
                     value={formData.phone}
                     onChange={handleChange}
+                    required
                     className="transition-all duration-300 focus:scale-[1.02]"
                   />
                 </div>
