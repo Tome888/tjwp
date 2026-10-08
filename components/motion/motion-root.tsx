@@ -8,6 +8,7 @@ import type { ScrollTrigger as ST } from "gsap/ScrollTrigger"
 declare global {
   interface Window {
     __motionReady?: boolean
+    __motionArmed?: boolean
   }
 }
 
@@ -89,12 +90,27 @@ export function MotionRoot({ lang }: { lang: string }) {
       revert = () => mm.revert()
     }
 
-    const idle = window.requestIdleCallback
-      ? window.requestIdleCallback(run, { timeout: 1200 })
-      : window.setTimeout(run, 150)
+    // Every GSAP effect is scroll-linked, so nothing needs it before the first
+    // scroll or touch. Waiting keeps its start-up off the main thread while
+    // the page loads; after that, later pages start it straight away.
+    let idle = 0
+    const start = () => {
+      window.__motionArmed = true
+      idle = window.requestIdleCallback
+        ? window.requestIdleCallback(run, { timeout: 300 })
+        : window.setTimeout(run, 50)
+    }
+    const events = ["scroll", "wheel", "touchstart", "pointerdown", "keydown"] as const
+    const arm = () => {
+      events.forEach((e) => window.removeEventListener(e, arm))
+      start()
+    }
+    if (window.__motionArmed || window.scrollY > 0) start()
+    else events.forEach((e) => window.addEventListener(e, arm, { passive: true, once: true }))
 
     return () => {
       cancelled = true
+      events.forEach((e) => window.removeEventListener(e, arm))
       if (window.cancelIdleCallback) window.cancelIdleCallback(idle)
       else window.clearTimeout(idle)
       revert?.()
