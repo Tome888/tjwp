@@ -437,6 +437,7 @@ html[lang="mk"] {
   /* Own box per word, so the read-through runs line by line. */
   .split .wd {
     display: inline-block;
+    text-indent: 0; /* inline-blocks inherit the paragraph's first-line indent */
   }
   .split .c.k {
     margin-left: -0.075em;
@@ -1844,6 +1845,29 @@ html[lang="mk"] {
   }
 }
 
+/* Belts: product names and skill rows slide sideways as you scroll, in both
+   modes. --amount is the travel in % of the element's own width. */
+@keyframes belt {
+  from {
+    transform: translate3d(calc(var(--amount, 6) * var(--belt-scale, 1) * 1%), 0, 0);
+  }
+  to {
+    transform: translate3d(calc(var(--amount, 6) * var(--belt-scale, 1) * -1%), 0, 0);
+  }
+}
+@media (max-width: 1023px) {
+  [data-k="drift"] {
+    --belt-scale: 0.5;
+  }
+}
+@supports (animation-timeline: view()) {
+  [data-motion] [data-k="drift"] {
+    animation: belt linear both;
+    animation-timeline: view();
+    animation-range: cover 0% cover 100%;
+  }
+}
+
 /* The statement fills in with ink as you read it (opacity only, both modes).
    Starts at 50% so even the faint words keep 3:1 contrast. Pure CSS where
    scroll timelines exist; GSAP does it elsewhere. */
@@ -1859,9 +1883,8 @@ html[lang="mk"] {
     animation-range: cover 8% cover 42%;
   }
 }
-[data-motion="reduced"] .roll-host:hover .roll__t {
-  text-decoration: underline 1px;
-  text-underline-offset: 0.2em;
+[data-motion="reduced"] .roll-host:not(.btn):not(.nav-link):hover {
+  color: var(--accent);
 }
 [data-motion="reduced"] .site-header,
 [data-motion="reduced"] .nav-link::after,

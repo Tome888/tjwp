@@ -50,8 +50,6 @@ export const en = {
     title: "About",
     storyLabel: "Story",
     skillsLabel: "Tools I use",
-    experienceLabel: "Experience",
-    at: "at",
     educationLabel: "Education",
     skillsNote: "Not on the list? I pick up new tools fast. The project decides the stack, not the other way round.",
     linksLabel: "Elsewhere",

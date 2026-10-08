@@ -87,7 +87,7 @@ export function Products({ lang, index = 3 }: { lang: Lang; index?: number }) {
                 data-k="drift"
                 data-k-amount={i % 2 ? -5 : 5}
                 className="display product__name"
-                style={{ "--len": Math.max(Array.from(product.name).length, 6) } as Vars}
+                style={{ "--len": Math.max(Array.from(product.name).length, 6), "--amount": i % 2 ? -5 : 5 } as Vars}
               >
                 {i % 2 ? <em>{product.name}</em> : product.name}
               </div>

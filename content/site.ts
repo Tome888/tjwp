@@ -63,8 +63,8 @@ export const site: Site = {
       mk: "Градам веб и мобилни апликации. За клиенти, за тимови и за себе.",
     },
     intro: {
-      en: "I build web and mobile apps, APIs and back-ends. I've shipped work for clients, worked as a software engineer at Pabau, and I build products of my own. TypeScript is home base, but I pick up whatever a project needs.",
-      mk: "Градам веб и мобилни апликации, API и бекенд. Сум работел за клиенти, како софтверски инженер во Pabau, а градам и свои производи. Најмногу работам со TypeScript, но брзо учам што и да бара проектот.",
+      en: "I build web and mobile apps, APIs and back-ends. I've shipped work for clients, worked inside product teams, and I build products of my own. TypeScript is home base, but I pick up whatever a project needs.",
+      mk: "Градам веб и мобилни апликации, API и бекенд. Сум работел за клиенти и во продуктни тимови, а градам и свои производи. Најмногу работам со TypeScript, но брзо учам што и да бара проектот.",
     },
     available: true,
     availability: {
@@ -109,18 +109,11 @@ export const site: Site = {
       },
       {
         group: { en: "Databases", mk: "Бази на податоци" },
-        items: ["Supabase", "MongoDB", "MySQL"],
+        items: ["Supabase", "MongoDB", "SQL"],
       },
       {
         group: { en: "Tools & CMS", mk: "Алатки и CMS" },
         items: ["Git", "WordPress"],
-      },
-    ],
-    // Work history. `period` is optional, e.g. period: { en: "2023 – 2024", mk: "2023 – 2024" }
-    experience: [
-      {
-        title: { en: "Software Engineer", mk: "Софтверски инженер" },
-        place: "Pabau",
       },
     ],
     education: [
@@ -158,8 +151,8 @@ export const site: Site = {
     {
       title: { en: "Full-time roles", mk: "Редовна работа" },
       text: {
-        en: "I've worked as a software engineer at Pabau, on a platform clinics use worldwide. Open to the right full-time role.",
-        mk: "Работев како софтверски инженер во Pabau, на платформа што ја користат клиники ширум светот. Отворен сум за вистинската редовна позиција.",
+        en: "Comfortable inside an existing team and codebase. Open to the right full-time role.",
+        mk: "Се снаоѓам во постоечки тим и кодна база. Отворен сум за вистинската редовна позиција.",
       },
     },
     {
@@ -199,7 +192,7 @@ export const site: Site = {
         mk: "Ова е платформа од ентерпрајз ниво што ја користат клиники ширум светот за управување со термини, наплата, комуникација со пациенти и други секојдневни оперативни процеси. Платформата е изградена со Next.js за корисничкиот интерфејс, GraphQL за размена на податоци и NestJS за серверската страна, користејќи современи технологии за да се обезбедат скалабилност, високи перформанси и сигурност.",
       },
       tags: ["nextJS", "graphql", "fullStack"],
-      role: { en: "Software engineer at Pabau", mk: "Софтверски инженер во Pabau" },
+      role: { en: "Team project", mk: "Тимски проект" },
       link: "https://pabau.com/",
       image: "pabau.png",
       featured: true,

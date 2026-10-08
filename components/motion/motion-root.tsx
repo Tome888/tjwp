@@ -145,7 +145,7 @@ function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean, calm:
   }
 
   // Horizontal drift against the scroll (product names, skill rows, headings).
-  for (const el of all('[data-k="drift"]')) {
+  for (const el of cssWords ? [] : all('[data-k="drift"]')) {
     const amount = (Number(el.dataset.kAmount) || 10) * (wide ? 1 : 0.5)
     gsap.fromTo(
       el,

@@ -12,6 +12,7 @@ import { MotionToggle } from "@/components/motion/motion-toggle"
 type Nav = Dict["nav"]
 
 const links = [
+  { href: "/", key: "home" },
   { href: "/about", key: "about" },
   { href: "/projects", key: "projects" },
   { href: "/contact", key: "contact" },
@@ -80,7 +81,7 @@ export function SiteHeader({
             </span>
           </Link>
 
-          <nav aria-label={t.label} className="hidden md:block">
+          <nav aria-label={t.label} className="hidden lg:block">
             <ul className="flex items-center gap-10">
               {links.map((link, i) => (
                 <li key={link.href}>
@@ -90,7 +91,7 @@ export function SiteHeader({
                     aria-current={isActive(link.href) ? "page" : undefined}
                   >
                     <span className="nav-link__num" aria-hidden="true">
-                      0{i + 1}
+                      0{i}
                     </span>
                     <Roll text={t[link.key]} />
                   </Link>
@@ -101,12 +102,12 @@ export function SiteHeader({
 
           <div className="flex items-center gap-5">
             <LangSwitch lang={lang} label={t.language} />
-            <div className="hidden md:block">
+            <div className="hidden lg:block">
               <ThemeToggle t={t} />
             </div>
             <button
               type="button"
-              className="label-btn md:hidden"
+              className="label-btn lg:hidden"
               aria-haspopup="dialog"
               aria-expanded={menuOpen}
               onClick={() => menu.current?.showModal()}
@@ -134,7 +135,7 @@ export function SiteHeader({
         </div>
         <nav aria-label={t.label} className="wrap mt-[8vh]">
           <ul className="menu__list">
-            {[{ href: "/", key: "home" as const }, ...links].map((link, i) => (
+            {links.map((link, i) => (
               <li key={link.href} style={{ "--d": i } as CSSProperties}>
                 <Link href={link.href} aria-current={pathname === link.href ? "page" : undefined}>
                   <span className="menu__num">0{i}</span>

@@ -52,8 +52,6 @@ export const mk: Dict = {
     title: "За мене",
     storyLabel: "Накратко",
     skillsLabel: "Со што работам",
-    experienceLabel: "Искуство",
-    at: "во",
     educationLabel: "Образование",
     skillsNote: "Ја нема технологијата на листата? Брзо учам нови алатки. Проектот ја одредува технологијата, а не обратно.",
     linksLabel: "Профили",

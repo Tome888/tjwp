@@ -79,7 +79,12 @@ export default async function AboutPage(props: LangParams) {
         <div className="skills__rows" aria-hidden="true">
           {rows.map((row, r) => (
             <div key={r} className="skills__track">
-              <div data-k="drift" data-k-amount={r % 2 ? -7 : 7} className="display skills__row">
+              <div
+                data-k="drift"
+                data-k-amount={r % 2 ? -7 : 7}
+                className="display skills__row"
+                style={{ "--amount": r % 2 ? -7 : 7 } as CSSProperties}
+              >
                 {[...row, ...row, ...row].map((s, i) => (
                   <span key={i}>
                     {r % 2 ? <em>{s}</em> : s}
@@ -109,30 +114,9 @@ export default async function AboutPage(props: LangParams) {
         </div>
       </section>
 
-      {about.experience.length ? (
-        <section className="wrap section grid12 !pt-0" aria-labelledby="exp-label">
-          <div className="col-span-4 md:col-span-2 lg:col-span-3">
-            <SectionLabel index={3} id="exp-label" as="h2">
-              {t.experienceLabel}
-            </SectionLabel>
-          </div>
-          <ol className="ledger col-span-4 md:col-span-6 lg:col-span-9">
-            {about.experience.map((e, i) => (
-              <li key={i} data-reveal style={{ "--d": i } as CSSProperties}>
-                <span className="label">{pad(i + 1)}</span>
-                <span className="display ledger__title">
-                  {e.title[lang]} {t.at} <em className="text-accent">{e.place}</em>
-                </span>
-                {e.period ? <span className="ledger__meta">{e.period[lang]}</span> : null}
-              </li>
-            ))}
-          </ol>
-        </section>
-      ) : null}
-
       <section className="wrap section grid12 !pt-0" aria-labelledby="edu-label">
         <div className="col-span-4 md:col-span-2 lg:col-span-3">
-          <SectionLabel index={4} id="edu-label" as="h2">
+          <SectionLabel index={3} id="edu-label" as="h2">
             {t.educationLabel}
           </SectionLabel>
         </div>
@@ -149,7 +133,7 @@ export default async function AboutPage(props: LangParams) {
 
       <section className="wrap section grid12 !pt-0" aria-labelledby="links-label">
         <div className="col-span-4 md:col-span-2 lg:col-span-3">
-          <SectionLabel index={5} id="links-label" as="h2">
+          <SectionLabel index={4} id="links-label" as="h2">
             {t.linksLabel}
           </SectionLabel>
         </div>
