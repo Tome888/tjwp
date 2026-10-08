@@ -67,6 +67,8 @@ export function MotionRoot({ lang }: { lang: string }) {
   useEffect(() => {
     if (!mode) return
     if (!document.querySelector("[data-k]")) return
+    // Calm mode's only scroll effect (the statement) is CSS where supported.
+    if (mode === "reduced" && CSS.supports("animation-timeline: view()")) return
 
     let cancelled = false
     let revert: (() => void) | undefined
@@ -107,11 +109,12 @@ function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean, calm:
   const cleanups: Array<() => void> = []
 
   // Statement: words go from faint to full ink as you read down (opacity only,
-  // so it also runs in calm mode).
-  for (const el of all('[data-k="words"]')) {
+  // so it also runs in calm mode). CSS scroll timelines do this where supported.
+  const cssWords = CSS.supports("animation-timeline: view()")
+  for (const el of cssWords ? [] : all('[data-k="words"]')) {
     gsap.fromTo(
       el.querySelectorAll(".wd"),
-      { opacity: 0.14 },
+      { opacity: 0.5 },
       {
         opacity: 1,
         ease: "none",

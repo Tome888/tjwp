@@ -434,6 +434,10 @@ html[lang="mk"] {
   .split .c {
     display: inline-block;
   }
+  /* Own box per word, so the read-through runs line by line. */
+  .split .wd {
+    display: inline-block;
+  }
   .split .c.k {
     margin-left: -0.075em;
   }
@@ -1822,11 +1826,38 @@ html[lang="mk"] {
   animation: fade 0.9s ease backwards;
   animation-delay: calc(var(--i) * 55ms + 100ms);
 }
-[data-motion="reduced"] .intro-fade {
-  animation: fade 0.9s ease 0.4s backwards;
+[data-motion="reduced"] .hero__meta {
+  animation: fade 0.9s ease 0.2s backwards;
 }
-[data-motion="reduced"] .hero__portrait-frame img {
-  animation: fade 1.4s ease 0.2s backwards;
+@media (min-width: 1024px) {
+  [data-motion="reduced"] .intro-fade {
+    animation: fade 0.9s ease 0.4s backwards;
+  }
+  [data-motion="reduced"] .hero__portrait-frame img {
+    animation: fade 1.4s ease 0.2s backwards;
+  }
+}
+/* Phones: same LCP rule as full mode, the first name stays put. */
+@media (max-width: 1023px) {
+  [data-motion="reduced"] .hero__line--first .c {
+    animation: none;
+  }
+}
+
+/* The statement fills in with ink as you read it (opacity only, both modes).
+   Starts at 50% so even the faint words keep 3:1 contrast. Pure CSS where
+   scroll timelines exist; GSAP does it elsewhere. */
+@keyframes ink-in {
+  from {
+    opacity: 0.5;
+  }
+}
+@supports (animation-timeline: view()) {
+  [data-motion] [data-k="words"] .wd {
+    animation: ink-in linear both;
+    animation-timeline: view();
+    animation-range: cover 8% cover 42%;
+  }
 }
 [data-motion="reduced"] .roll-host:hover .roll__t {
   text-decoration: underline 1px;
