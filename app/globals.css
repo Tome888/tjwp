@@ -667,7 +667,7 @@ html[lang="mk"] {
     align-items: end;
   }
   .hero__tagline {
-    max-width: 24ch;
+    max-width: 16.0em;
     font-size: clamp(1.25rem, 2.1vw, 1.8rem);
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -757,7 +757,7 @@ html[lang="mk"] {
     font-style: italic;
   }
   .service__text {
-    max-width: 38ch;
+    max-width: 25.3em;
     font-size: 1.05rem;
     color: var(--soft);
   }
@@ -875,7 +875,7 @@ html[lang="mk"] {
     letter-spacing: -0.03em;
   }
   .chapter__summary {
-    max-width: 34ch;
+    max-width: 22.6em;
     margin-top: 1.25rem;
     font-size: 1.15rem;
     line-height: 1.4;
@@ -1047,7 +1047,7 @@ html[lang="mk"] {
     vertical-align: top;
   }
   .page-lead {
-    max-width: 28ch;
+    max-width: 18.6em;
     font-size: clamp(1.25rem, 2.1vw, 1.8rem);
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -1055,7 +1055,7 @@ html[lang="mk"] {
 
   /* About */
   .about-role {
-    max-width: 20ch;
+    max-width: 12.5em;
     font-size: clamp(2rem, 4.6vw, 4.25rem);
     line-height: 1;
   }
@@ -1106,7 +1106,7 @@ html[lang="mk"] {
     text-wrap: pretty;
   }
   .about-body {
-    max-width: 62ch;
+    max-width: 41.2em;
     margin-bottom: 1.5rem;
     font-size: 1.1rem;
     line-height: 1.7;
@@ -1383,7 +1383,7 @@ html[lang="mk"] {
     line-height: 0.95;
   }
   .pd__text {
-    max-width: 62ch;
+    max-width: 41.2em;
     font-size: 1.08rem;
     line-height: 1.7;
   }
@@ -1397,7 +1397,7 @@ html[lang="mk"] {
 
   /* Contact */
   .contact-lead {
-    max-width: 30ch;
+    max-width: 20.0em;
     margin-bottom: 3rem;
     font-size: clamp(1.2rem, 1.8vw, 1.5rem);
     line-height: 1.35;
@@ -1486,7 +1486,7 @@ html[lang="mk"] {
   }
   .form-status {
     min-height: 1.5rem;
-    max-width: 40ch;
+    max-width: 26.6em;
   }
   .form-status[data-state="failed"] {
     color: var(--accent);

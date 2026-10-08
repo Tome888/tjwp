@@ -30,7 +30,7 @@ export default async function AboutPage(props: LangParams) {
         >
           <Chars text={t.title} className="mask kinetic" />
         </h1>
-        <p className="display about-role intro-fade col-span-4 md:col-span-6 md:col-start-3 lg:col-span-6 lg:col-start-6">
+        <p className="display about-role intro-fade col-span-4 md:col-span-6 md:col-start-3 lg:col-span-7 lg:col-start-6">
           <em>{profile.role[lang]}</em>
         </p>
       </section>
