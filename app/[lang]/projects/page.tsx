@@ -22,6 +22,8 @@ export default async function ProjectsPage(props: LangParams) {
     summary: p.summary[lang],
     details: p.details[lang],
     tags: p.tags,
+    role: p.role?.[lang],
+    status: p.status?.[lang],
     link: p.link,
     image: imagePath(p.image),
   }))

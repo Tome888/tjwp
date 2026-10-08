@@ -3,7 +3,7 @@ export const en = {
   meta: {
     title: "Tome Jeftimov — Developer",
     description:
-      "Developer from North Macedonia. Contract work in TypeScript, Node, Next.js and Supabase, and a few products of my own.",
+      "Developer from North Macedonia. Web and mobile apps, APIs and back-ends: contract work, team roles and products of my own.",
     about: "About",
     aboutDescription: "Who I am, what I use, where I studied.",
     projects: "Work",
@@ -25,6 +25,9 @@ export const en = {
     themeToLight: "Switch to light theme",
     themeLight: "Paper",
     themeDark: "Ink",
+    motion: "Motion",
+    motionFull: "Full",
+    motionCalm: "Calm",
   },
   home: {
     scroll: "Scroll",
@@ -47,7 +50,10 @@ export const en = {
     title: "About",
     storyLabel: "Story",
     skillsLabel: "Tools I use",
+    experienceLabel: "Experience",
+    at: "at",
     educationLabel: "Education",
+    skillsNote: "Not on the list? I pick up new tools fast. The project decides the stack, not the other way round.",
     linksLabel: "Elsewhere",
     cv: "Download CV",
     role: "Role",
@@ -104,7 +110,6 @@ export const en = {
   footer: {
     rights: "All rights reserved.",
     top: "Back to top",
-    colophon: "Set in Playfair and Onest.",
   },
   notFound: {
     title: "Nothing here.",

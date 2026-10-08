@@ -14,7 +14,10 @@
  *     Any size works; landscape around 1600×1000 looks best.
  *  2. Scroll down to `projects: [` and copy the example below into the list.
  *     The order in the list is the order on the site.
- *  3. Fill in the fields. `link`, `image` and `featured` are optional:
+ *  3. Fill in the fields. `role`, `status`, `link`, `image` and `featured`
+ *     are optional:
+ *       - `role`   → who it was for, e.g. "Client project"
+ *       - `status` → e.g. "In development", shown as a small badge
  *       - no `image` → a typographic placeholder is shown instead
  *       - no `link`  → the "Visit" button is hidden
  *       - `featured: true` → also shown as a chapter on the home page
@@ -31,6 +34,8 @@
  *        mk: "Подолг опис што се прикажува кога ќе се отвори проектот.",
  *      },
  *      tags: ["nextJS", "supabase"],
+ *      role: { en: "Client project", mk: "Проект за клиент" },
+ *      status: { en: "In development", mk: "Во развој" },
  *      link: "https://example.com",
  *      image: "my-project.png",
  *      featured: false,
@@ -54,16 +59,16 @@ export const site: Site = {
     },
     location: { en: "North Macedonia", mk: "Северна Македонија" },
     tagline: {
-      en: "I build web products in TypeScript. For clients, and for myself.",
-      mk: "Градам веб-производи со TypeScript. За клиенти и за себе.",
+      en: "I build web and mobile apps. For clients, for teams, and for myself.",
+      mk: "Градам веб и мобилни апликации. За клиенти, за тимови и за себе.",
     },
     intro: {
-      en: "I work in TypeScript, mostly with Node, Next.js and Supabase. I take on contract work for clients, and between projects I build products of my own.",
-      mk: "Работам со TypeScript, најчесто со Node, Next.js и Supabase. Работам по договор за клиенти, а меѓу проектите градам свои производи.",
+      en: "I build web and mobile apps, APIs and back-ends. I've shipped work for clients, worked as a software engineer at Pabau, and I build products of my own. TypeScript is home base, but I pick up whatever a project needs.",
+      mk: "Градам веб и мобилни апликации, API и бекенд. Сум работел за клиенти, како софтверски инженер во Pabau, а градам и свои производи. Најмногу работам со TypeScript, но брзо учам што и да бара проектот.",
     },
     available: true,
     availability: {
-      en: "Open for contract work",
+      en: "Open for new projects",
       mk: "Слободен за нови проекти",
     },
   },
@@ -88,19 +93,35 @@ export const site: Site = {
         mk: "Отворен сум за нови можности и предизвици, со јасна цел да градам влијателни дигитални решенија и да ги претворам идеите во целосно функционални производи. Сакам да работам на значајни проекти, да учам од другите и да создавам кул работи што оставаат вистински впечаток.",
       },
     ],
+    // Grouped so visitors can scan them. Add or move items freely.
     skills: [
-      "HTML5",
-      "CSS3",
-      "JavaScript",
-      "React",
-      "Next.js",
-      "Express.js",
-      "Node.js",
-      "GraphQL",
-      "Git",
-      "MongoDB",
-      "Supabase",
-      "WordPress",
+      {
+        group: { en: "Front-end", mk: "Фронтенд" },
+        items: ["TypeScript", "JavaScript", "React", "Next.js", "HTML5", "CSS3"],
+      },
+      {
+        group: { en: "Mobile", mk: "Мобилни" },
+        items: ["React Native", "Expo"],
+      },
+      {
+        group: { en: "Back-end", mk: "Бекенд" },
+        items: ["Node.js", "Express.js", "GraphQL", "WebSockets", "PHP"],
+      },
+      {
+        group: { en: "Databases", mk: "Бази на податоци" },
+        items: ["Supabase", "MongoDB", "MySQL"],
+      },
+      {
+        group: { en: "Tools & CMS", mk: "Алатки и CMS" },
+        items: ["Git", "WordPress"],
+      },
+    ],
+    // Work history. `period` is optional, e.g. period: { en: "2023 – 2024", mk: "2023 – 2024" }
+    experience: [
+      {
+        title: { en: "Software Engineer", mk: "Софтверски инженер" },
+        place: "Pabau",
+      },
     ],
     education: [
       {
@@ -130,22 +151,22 @@ export const site: Site = {
     {
       title: { en: "Contract work", mk: "Работа по договор" },
       text: {
-        en: "Web apps, APIs and back-ends in TypeScript, Node, Next.js and Supabase. I can join your team or take a project from start to launch.",
-        mk: "Веб-апликации, API и бекенд со TypeScript, Node, Next.js и Supabase. Можам да се приклучам на вашиот тим или да водам проект од почеток до лансирање.",
-      },
-    },
-    {
-      title: { en: "My own products", mk: "Мои производи" },
-      text: {
-        en: "A carpool app for Macedonia and a QR ordering system for restaurants. I design, build and run them myself.",
-        mk: "Апликација за заеднички превоз низ Македонија и систем за нарачки со QR-код за ресторани. Сам ги дизајнирам, градам и одржувам.",
+        en: "Web and mobile apps, APIs and back-ends. I can join your team or take a project from first idea to launch. I'm not tied to one stack: if the job needs a new tool, I learn it.",
+        mk: "Веб и мобилни апликации, API и бекенд. Можам да се приклучам на вашиот тим или да водам проект од идеја до лансирање. Не сум врзан за една технологија: ако проектот бара нова алатка, ја учам.",
       },
     },
     {
       title: { en: "Full-time roles", mk: "Редовна работа" },
       text: {
-        en: "Open to the right full-time role. Happy to talk.",
-        mk: "Отворен сум и за вистинската редовна позиција. Слободно пишете ми.",
+        en: "I've worked as a software engineer at Pabau, on a platform clinics use worldwide. Open to the right full-time role.",
+        mk: "Работев како софтверски инженер во Pabau, на платформа што ја користат клиники ширум светот. Отворен сум за вистинската редовна позиција.",
+      },
+    },
+    {
+      title: { en: "My own products", mk: "Мои производи" },
+      text: {
+        en: "A QR ordering system for restaurants, in development. Building my own product keeps me thinking about the business, not just the code.",
+        mk: "Систем за нарачки со QR-код за ресторани, во развој. Кога градам свој производ, размислувам и за бизнисот, не само за кодот.",
       },
     },
   ],
@@ -154,24 +175,19 @@ export const site: Site = {
   // Optional fields: status, link, image. Add them when you have them.
   products: [
     {
-      name: "NajdiPrevoz",
-      summary: {
-        en: "Carpooling for Macedonia. Drivers offer their empty seats, passengers find a ride.",
-        mk: "Заеднички превоз низ Македонија. Возачите ги нудат слободните места, патниците наоѓаат превоз.",
-      },
-    },
-    {
       name: "QR Ordering",
       summary: {
         en: "A SaaS for restaurants. Guests scan a QR code at the table and order from their phone.",
         mk: "SaaS за ресторани. Гостите скенираат QR-код на масата и нарачуваат од својот телефон.",
       },
+      status: { en: "In development", mk: "Во развој" },
     },
   ],
 
   // ── PROJECTS ───────────────────────────────────────────────────────────────
   // See the instructions at the top of this file.
   projects: [
+    // Client and employer work first, then personal projects.
     {
       title: { en: "Pabau Software", mk: "Pabau Software" },
       summary: {
@@ -183,37 +199,24 @@ export const site: Site = {
         mk: "Ова е платформа од ентерпрајз ниво што ја користат клиники ширум светот за управување со термини, наплата, комуникација со пациенти и други секојдневни оперативни процеси. Платформата е изградена со Next.js за корисничкиот интерфејс, GraphQL за размена на податоци и NestJS за серверската страна, користејќи современи технологии за да се обезбедат скалабилност, високи перформанси и сигурност.",
       },
       tags: ["nextJS", "graphql", "fullStack"],
+      role: { en: "Software engineer at Pabau", mk: "Софтверски инженер во Pabau" },
       link: "https://pabau.com/",
       image: "pabau.png",
       featured: true,
     },
     {
-      title: { en: "Vibe Strings", mk: "Vibe Strings" },
+      title: { en: "NajdiPrevoz", mk: "NajdiPrevoz" },
       summary: {
-        en: "Responsive Web Application",
-        mk: "Респонзивна Веб Апликација",
+        en: "Carpooling app for North Macedonia, for iOS and Android.",
+        mk: "Апликација за заеднички превоз низ Македонија, за iOS и Android.",
       },
       details: {
-        en: "This responsive guitar shop project was built with Next.js and Next API routes, originally using GraphQL for data fetching. Created as a company assignment, it now filters data by passing parameters to the API. After the GraphQL API went down, it was updated to work fully with Next.js. It also provides a language toggle between 3 languages.",
-        mk: "Овој респонзивен проект за продавница за гитари е изработен со Next.js и Next API рути, првично користејќи GraphQL за добивање податоци. Создаден како задача за компанија, сега филтрира податоци преку параметри во API-то. По паѓањето на GraphQL API-то, е ажуриран целосно да работи со Next.js. Исто така поддржува опција за 3 јазици.",
+        en: "A carpooling app built for a client. Drivers offer their empty seats, passengers find a ride. It's a mobile app for iOS and Android, built with Expo, with an Express back-end.",
+        mk: "Апликација за заеднички превоз изработена за клиент. Возачите ги нудат слободните места, патниците наоѓаат превоз. Мобилна апликација за iOS и Android, изработена со Expo, со бекенд на Express.",
       },
-      tags: ["nextJS", "responsive", "fullStack"],
-      link: "https://guitar-shop-tj.vercel.app/",
-      image: "vibe-strings.png",
-    },
-    {
-      title: { en: "RPS Online Game", mk: "RPS Online Game" },
-      summary: {
-        en: "Multiplayer Web Game",
-        mk: "Веб Игра за Повеќе Играчи",
-      },
-      details: {
-        en: "This is a online multiplayer Rock, Paper, Scissors game where you can invite your friends to play 1v1. It is developed with Next.Js and Express.js using WebSockets.",
-        mk: "Ова е online multiplayer игра каде можете да ги поканете вашите пријатели и да играте лист, камен, ножичка еден против друг. Изградена е со NextJs и Express.js со WebSockets.",
-      },
-      tags: ["nextJS", "fullStack", "webSocket"],
-      link: "https://rps-online-game-pi.vercel.app/",
-      image: "rps-online.png",
+      tags: ["expo", "reactNative", "expressJS", "mobile"],
+      role: { en: "Client project · iOS & Android", mk: "Проект за клиент · iOS и Android" },
+      status: { en: "In development", mk: "Во развој" },
       featured: true,
     },
     {
@@ -227,6 +230,7 @@ export const site: Site = {
         mk: "Ја модернизирав Систем48, застарена општинска платформа за пријавување проблеми и предлози, преку имплементација на нов, респонзивен дизајн прилагоден за мобилни уреди, елиминирање на критични безбедносни пропусти како XSS и SQL инјекции, и оптимизација на перформансите за побрзо и побезбедно корисничко искуство.",
       },
       tags: ["php", "fullStack", "mySql"],
+      role: { en: "Client project", mk: "Проект за клиент" },
       link: "https://sistem48.strumica.gov.mk/index.php",
       image: "sistem48.webp",
       featured: true,
@@ -245,9 +249,40 @@ export const site: Site = {
         mk: "Безбедна и респонзивна официјална владина веб-страница изработена на WordPress платформа. Главни придонеси: full-stack програмирање, UI/UX дизајн, миграција на податоци и долгорочно одржување на системот.",
       },
       tags: ["WordPress"],
+      role: { en: "Client project", mk: "Проект за клиент" },
       link: "https://strumica.gov.mk/",
       image: "strumica-gov.webp",
       featured: true,
+    },
+    {
+      title: { en: "Vibe Strings", mk: "Vibe Strings" },
+      summary: {
+        en: "Responsive Web Application",
+        mk: "Респонзивна Веб Апликација",
+      },
+      details: {
+        en: "This responsive guitar shop project was built with Next.js and Next API routes, originally using GraphQL for data fetching. Created as a company assignment, it now filters data by passing parameters to the API. After the GraphQL API went down, it was updated to work fully with Next.js. It also provides a language toggle between 3 languages.",
+        mk: "Овој респонзивен проект за продавница за гитари е изработен со Next.js и Next API рути, првично користејќи GraphQL за добивање податоци. Создаден како задача за компанија, сега филтрира податоци преку параметри во API-то. По паѓањето на GraphQL API-то, е ажуриран целосно да работи со Next.js. Исто така поддржува опција за 3 јазици.",
+      },
+      tags: ["nextJS", "responsive", "fullStack"],
+      role: { en: "Company assignment", mk: "Задача за компанија" },
+      link: "https://guitar-shop-tj.vercel.app/",
+      image: "vibe-strings.png",
+    },
+    {
+      title: { en: "RPS Online Game", mk: "RPS Online Game" },
+      summary: {
+        en: "Multiplayer Web Game",
+        mk: "Веб Игра за Повеќе Играчи",
+      },
+      details: {
+        en: "This is a online multiplayer Rock, Paper, Scissors game where you can invite your friends to play 1v1. It is developed with Next.Js and Express.js using WebSockets.",
+        mk: "Ова е online multiplayer игра каде можете да ги поканете вашите пријатели и да играте лист, камен, ножичка еден против друг. Изградена е со NextJs и Express.js со WebSockets.",
+      },
+      tags: ["nextJS", "fullStack", "webSocket"],
+      role: { en: "Personal project", mk: "Личен проект" },
+      link: "https://rps-online-game-pi.vercel.app/",
+      image: "rps-online.png",
     },
     {
       title: { en: "Wordle-Clone", mk: "Wordle-Clone" },
@@ -260,6 +295,7 @@ export const site: Site = {
         mk: "Ова е клон на Wordle изграден со React и TypeScript, забавна и интерактивна игра за погодување зборови. Играчите можат да погодуваат зборови со различна должина. Играта вклучува поставки како бројот на обиди и должината на зборовите, со визуелни `feedback` (зелено за правилен одговор, жолто за погрешна позиција на буквата) кои помагаат на играчите да го погодат зборот. По победата, се активира конфети прослава, додавајќи дополнителна возбуда. Апликацијата има и респонзивен дизајн, кој обезбедува беспрекорно искуство на сите уреди.",
       },
       tags: ["reactTS", "challenge", "responsive"],
+      role: { en: "Personal project", mk: "Личен проект" },
       link: "https://my-wordle-clone-tj.netlify.app/",
       image: "wordle-clone.png",
     },
@@ -274,6 +310,7 @@ export const site: Site = {
         mk: "Си поставив предизвик да изградам аркадна игра за само еден ден. Играта има рендер состојба слична на тоа како што функционира вистински геим енџин, но во поедноставена верзија. Изградена со ванила JavaScript, CSS и HTML, вклучува основни механики на играта како динамичко рендерирање, детекција на колизии и слично. Без разлика на краткиот рок, успеав да создадам игра која ги имитира структурите на вистински геим енџин. Тоа беше одлична вежба за развој на игри и решавање на проблеми.",
       },
       tags: ["javaScript", "responsive", "challenge"],
+      role: { en: "Personal project", mk: "Личен проект" },
       link: "https://snake-arcade-game-tj.netlify.app/",
       image: "snake-game.png",
     },
@@ -288,6 +325,7 @@ export const site: Site = {
         mk: "Ова е едноставна eCommerce продавница изградена со Next.js, која вклучува пребарување, филтрирање и подобрена SEO оптимизација преку користење на getServerSideProps и getStaticProps. Веб-страницата вклучува почетна страница, страница за пребарување, блог страница, страница за „за нас“, индивидуални блог постови и страници за поединечни производи.",
       },
       tags: ["nextJS", "responsive"],
+      role: { en: "Personal project", mk: "Личен проект" },
       link: "https://e-com-deploy-verc.vercel.app",
       image: "ecommerce-shop.png",
     },
@@ -302,6 +340,7 @@ export const site: Site = {
         mk: "Ова е финалниот проект од модулот React/Next.js на Brainster. Вклучува филтри, функција за пребарување и динамичен календар кој се прилагодува според податоците. За да го направам проектот подинамичен, одлучив за првпат да додадам backend, користејќи Express.js и db.json база на податоци. Backend-от управува со регистрација на корисници, најавување преку JWT, и им овозможува на корисниците да ги ажурираат своите информации или да коментираат на блог-постови, при што коментарите се зачувуваат во базата. Исто така, додадов поддршка за два јазика: англиски и македонски.",
       },
       tags: ["nextJS", "fullStack", "expressJS"],
+      role: { en: "Brainster capstone", mk: "Завршен проект, Brainster" },
       link: "https://mahr-platform-verc.vercel.app",
       image: "mahr-platform.png",
     },

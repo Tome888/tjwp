@@ -3,6 +3,7 @@ import { site } from "@/content/site"
 import type { Lang } from "@/content/types"
 import { getDict } from "@/lib/i18n"
 import { Roll } from "@/components/motion/kinetic"
+import { MotionToggle } from "@/components/motion/motion-toggle"
 
 export function SiteFooter({ lang }: { lang: Lang }) {
   const t = getDict(lang)
@@ -55,7 +56,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
         <p>
           © {new Date().getFullYear()} {profile.firstName[lang]} {profile.lastName[lang]}. {t.footer.rights}
         </p>
-        <p>{t.footer.colophon}</p>
+        <MotionToggle t={t.nav} />
         <a href="#top" className="roll-host self-start md:self-auto">
           <Roll text={t.footer.top} arrow="up" />
         </a>

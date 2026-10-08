@@ -31,10 +31,23 @@ export interface Education {
   institute: Text
 }
 
+export interface Experience {
+  title: Text
+  place: string
+  /** e.g. { en: "2023 – 2024", mk: "2023 – 2024" }. Optional. */
+  period?: Text
+}
+
+export interface SkillGroup {
+  group: Text
+  items: string[]
+}
+
 export interface About {
   /** One entry per paragraph. */
   paragraphs: Text[]
-  skills: string[]
+  skills: SkillGroup[]
+  experience: Experience[]
   education: Education[]
   github: string
   /** CV file in /public for each language, e.g. "cv/tome-jeftimov-cv-en.jpeg" */
@@ -64,6 +77,10 @@ export interface Project {
   /** The longer text, shown when the project is opened. */
   details: Text
   tags: string[]
+  /** Who it was for, e.g. "Client project" or "Software engineer at Pabau". Optional. */
+  role?: Text
+  /** e.g. "In development". Shown as a small badge. Optional. */
+  status?: Text
   /** Full URL to the live project. Optional. */
   link?: string
   /** Image file in /public/projects/, e.g. "pabau.png". Optional. */

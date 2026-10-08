@@ -5,7 +5,7 @@ export const mk: Dict = {
   meta: {
     title: "Томе Јефтимов — Програмер",
     description:
-      "Програмер од Северна Македонија. Договорна работа со TypeScript, Node, Next.js и Supabase, и неколку мои производи.",
+      "Програмер од Северна Македонија. Веб и мобилни апликации, API и бекенд: работа по договор, во тим и мои производи.",
     about: "За мене",
     aboutDescription: "Кој сум, со што работам и каде учев.",
     projects: "Проекти",
@@ -27,6 +27,9 @@ export const mk: Dict = {
     themeToLight: "Вклучи светла тема",
     themeLight: "Хартија",
     themeDark: "Мастило",
+    motion: "Анимации",
+    motionFull: "Целосни",
+    motionCalm: "Мирни",
   },
   home: {
     scroll: "Надолу",
@@ -49,7 +52,10 @@ export const mk: Dict = {
     title: "За мене",
     storyLabel: "Накратко",
     skillsLabel: "Со што работам",
+    experienceLabel: "Искуство",
+    at: "во",
     educationLabel: "Образование",
+    skillsNote: "Ја нема технологијата на листата? Брзо учам нови алатки. Проектот ја одредува технологијата, а не обратно.",
     linksLabel: "Профили",
     cv: "Преземи CV",
     role: "Профил",
@@ -106,7 +112,6 @@ export const mk: Dict = {
   footer: {
     rights: "Сите права задржани.",
     top: "Назад горе",
-    colophon: "Фонтови: Playfair и Onest.",
   },
   notFound: {
     title: "Тука нема ништо.",

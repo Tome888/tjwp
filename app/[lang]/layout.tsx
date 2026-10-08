@@ -17,9 +17,10 @@ const preloadFonts = {
   mk: ["onest-latin.woff2", "onest-cyrillic.woff2", "playfair-mk-normal.woff2", "playfair-mk-italic.woff2"],
 }
 
-// Runs before first paint: decides full vs reduced motion so nothing flashes.
+// Runs before first paint: picks full or calm motion so nothing flashes.
+// A choice made with the Motion switch wins; otherwise the OS setting.
 // If the app never hydrates, content is shown unanimated after 4s.
-const motionBoot = `(function(){var d=document.documentElement;try{d.dataset.motion=matchMedia("(prefers-reduced-motion: reduce)").matches?"reduced":"full"}catch(e){}setTimeout(function(){if(!window.__motionReady)d.removeAttribute("data-motion")},4000)})()`
+const motionBoot = `(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem("motion")}catch(e){}try{d.dataset.motion=s==="full"||s==="reduced"?s:matchMedia("(prefers-reduced-motion: reduce)").matches?"reduced":"full"}catch(e){}setTimeout(function(){if(!window.__motionReady)d.removeAttribute("data-motion")},4000)})()`
 
 // Every page exists once per language, prerendered at build time.
 export const dynamicParams = false

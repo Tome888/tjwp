@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, useTransition, type CSSProperties } from "
 import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
 import { Roll } from "@/components/motion/kinetic"
+import { MotionToggle } from "@/components/motion/motion-toggle"
 
 type Nav = Dict["nav"]
 
@@ -143,8 +144,9 @@ export function SiteHeader({
             ))}
           </ul>
         </nav>
-        <div className="wrap menu__foot">
+        <div className="wrap menu__foot flex flex-wrap items-center justify-between gap-4">
           <ThemeToggle t={t} />
+          <MotionToggle t={t} />
         </div>
       </dialog>
     </>

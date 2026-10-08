@@ -94,8 +94,12 @@ export function Products({ lang, index = 3 }: { lang: Lang; index?: number }) {
             </div>
             <div className="wrap grid12 product__meta" data-reveal>
               <h3 className="sr-only">{product.name}</h3>
-              <p className="label col-span-4 md:col-span-2 lg:col-span-2">
-                {product.status ? product.status[lang] : `${pad(i + 1)} / ${pad(site.products.length)}`}
+              <p className="col-span-4 md:col-span-2 lg:col-span-2">
+                {product.status ? (
+                  <span className="status">{product.status[lang]}</span>
+                ) : (
+                  <span className="label">{`${pad(i + 1)} / ${pad(site.products.length)}`}</span>
+                )}
               </p>
               <p className="col-span-4 text-lg leading-snug md:col-span-4 lg:col-span-5">{product.summary[lang]}</p>
               {product.link ? (

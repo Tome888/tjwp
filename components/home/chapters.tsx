@@ -82,6 +82,12 @@ export function Chapters({ lang, index = 4 }: { lang: Lang; index?: number }) {
                   </h3>
                   <div data-ch-body className="chapter__body">
                     <div data-reveal>
+                      {p.role || p.status ? (
+                        <p className="meta-line">
+                          {p.role ? <span className="label">{p.role[lang]}</span> : null}
+                          {p.status ? <span className="status">{p.status[lang]}</span> : null}
+                        </p>
+                      ) : null}
                       <p className="chapter__summary">{p.summary[lang]}</p>
                       <ul className="tags" aria-label={getDict(lang).projects.tags}>
                         {p.tags.map((tag) => (

@@ -13,8 +13,20 @@ export interface IndexItem {
   summary: string
   details: string
   tags: string[]
+  role?: string
+  status?: string
   link?: string
   image?: string
+}
+
+function MetaLine({ item }: { item: IndexItem }) {
+  if (!item.role && !item.status) return null
+  return (
+    <span className="meta-line">
+      {item.role ? <span className="label">{item.role}</span> : null}
+      {item.status ? <span className="status">{item.status}</span> : null}
+    </span>
+  )
 }
 
 type Vars = CSSProperties & Record<`--${string}`, string | number>
@@ -93,7 +105,10 @@ export function ProjectIndex({ items, t }: { items: IndexItem[]; t: Dict["projec
                     <span className="pi-title display">
                       <Chars text={item.title} by="word" />
                     </span>
-                    <span className="pi-summary">{item.summary}</span>
+                    <span className="pi-summary">
+                      <MetaLine item={item} />
+                      {item.summary}
+                    </span>
                     <span className="pi-tags">{item.tags.join(" / ")}</span>
                     <span className="pi-arrow" aria-hidden="true">
                       <Arrow />
@@ -132,6 +147,9 @@ export function ProjectIndex({ items, t }: { items: IndexItem[]; t: Dict["projec
               <h2 id="pd-title" className="display pd__title">
                 {active.title}
               </h2>
+              <p className="mt-4">
+                <MetaLine item={active} />
+              </p>
               <ul className="tags" aria-label={t.tags}>
                 {active.tags.map((tg) => (
                   <li key={tg}>{tg}</li>

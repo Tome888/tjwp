@@ -17,8 +17,10 @@ export default async function AboutPage(props: LangParams) {
   const lang = await langFrom(props)
   const t = getDict(lang).about
   const { profile, about, contact } = site
-  const half = Math.ceil(about.skills.length / 2)
-  const rows = [about.skills.slice(0, half), about.skills.slice(half)].filter((r) => r.length)
+  // The drifting rows are the visual; the grouped list below is for reading.
+  const allSkills = about.skills.flatMap((g) => g.items)
+  const half = Math.ceil(allSkills.length / 2)
+  const rows = [allSkills.slice(0, half), allSkills.slice(half)].filter((r) => r.length)
   const linkedIn = contact.links.find((l) => /linkedin/i.test(l.label))
 
   return (
@@ -74,11 +76,6 @@ export default async function AboutPage(props: LangParams) {
             {t.skillsLabel}
           </SectionLabel>
         </div>
-        <ul className="sr-only">
-          {about.skills.map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ul>
         <div className="skills__rows" aria-hidden="true">
           {rows.map((row, r) => (
             <div key={r} className="skills__track">
@@ -93,11 +90,49 @@ export default async function AboutPage(props: LangParams) {
             </div>
           ))}
         </div>
+        <div className="wrap">
+          <div className="stack">
+            {about.skills.map((g, i) => (
+              <div key={i} className="stack__group" data-reveal style={{ "--d": i } as CSSProperties}>
+                <h3 className="label">{g.group[lang]}</h3>
+                <ul>
+                  {g.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="stack__note" data-reveal>
+            {t.skillsNote}
+          </p>
+        </div>
       </section>
+
+      {about.experience.length ? (
+        <section className="wrap section grid12 !pt-0" aria-labelledby="exp-label">
+          <div className="col-span-4 md:col-span-2 lg:col-span-3">
+            <SectionLabel index={3} id="exp-label" as="h2">
+              {t.experienceLabel}
+            </SectionLabel>
+          </div>
+          <ol className="ledger col-span-4 md:col-span-6 lg:col-span-9">
+            {about.experience.map((e, i) => (
+              <li key={i} data-reveal style={{ "--d": i } as CSSProperties}>
+                <span className="label">{pad(i + 1)}</span>
+                <span className="display ledger__title">
+                  {e.title[lang]} {t.at} <em className="text-accent">{e.place}</em>
+                </span>
+                {e.period ? <span className="ledger__meta">{e.period[lang]}</span> : null}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
 
       <section className="wrap section grid12 !pt-0" aria-labelledby="edu-label">
         <div className="col-span-4 md:col-span-2 lg:col-span-3">
-          <SectionLabel index={3} id="edu-label" as="h2">
+          <SectionLabel index={4} id="edu-label" as="h2">
             {t.educationLabel}
           </SectionLabel>
         </div>
@@ -114,7 +149,7 @@ export default async function AboutPage(props: LangParams) {
 
       <section className="wrap section grid12 !pt-0" aria-labelledby="links-label">
         <div className="col-span-4 md:col-span-2 lg:col-span-3">
-          <SectionLabel index={4} id="links-label" as="h2">
+          <SectionLabel index={5} id="links-label" as="h2">
             {t.linksLabel}
           </SectionLabel>
         </div>

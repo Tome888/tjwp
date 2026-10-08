@@ -1,7 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import type { gsap as GSAP } from "gsap"
 import type { ScrollTrigger as ST } from "gsap/ScrollTrigger"
 
@@ -16,8 +16,12 @@ declare global {
  * 1. Reveals ([data-reveal]): an IntersectionObserver adds .is-in and CSS does
  *    the transition. No library, works with reduced motion (opacity only).
  * 2. Scroll-linked effects ([data-k]): GSAP + ScrollTrigger, loaded lazily once
- *    the browser is idle, only when motion is allowed. Pinning is native
- *    `position: sticky`; GSAP only scrubs transforms and opacity.
+ *    the browser is idle. Pinning is native `position: sticky`; GSAP only
+ *    scrubs transforms and opacity.
+ *
+ * html[data-motion] is "full" or "reduced" (calm). It starts from the OS
+ * setting and can be overridden with the Motion switch (see MotionToggle).
+ * Calm mode keeps opacity-only effects and drops movement.
  */
 export function MotionRoot({ lang }: { lang: string }) {
   const pathname = usePathname()
@@ -51,8 +55,17 @@ export function MotionRoot({ lang }: { lang: string }) {
     }
   }, [])
 
+  // Follow the Motion switch without a reload.
+  const [mode, setMode] = useState<string | undefined>()
   useEffect(() => {
-    if (document.documentElement.dataset.motion !== "full") return
+    const read = () => setMode(document.documentElement.dataset.motion)
+    read()
+    window.addEventListener("motionchange", read)
+    return () => window.removeEventListener("motionchange", read)
+  }, [])
+
+  useEffect(() => {
+    if (!mode) return
     if (!document.querySelector("[data-k]")) return
 
     let cancelled = false
@@ -66,18 +79,10 @@ export function MotionRoot({ lang }: { lang: string }) {
       if (cancelled) return
       gsap.registerPlugin(ScrollTrigger)
       const mm = gsap.matchMedia()
-      mm.add(
-        {
-          wide: "(min-width: 1024px)",
-          narrow: "(max-width: 1023px)",
-          reduce: "(prefers-reduced-motion: reduce)",
-        },
-        (context) => {
-          const { wide, reduce } = context.conditions as Record<string, boolean>
-          if (reduce) return
-          return setup(gsap, ScrollTrigger, wide)
-        },
-      )
+      mm.add({ wide: "(min-width: 1024px)", narrow: "(max-width: 1023px)" }, (context) => {
+        const { wide } = context.conditions as Record<string, boolean>
+        return setup(gsap, ScrollTrigger, wide, mode === "reduced")
+      })
       document.fonts?.ready.then(() => !cancelled && ScrollTrigger.refresh())
       revert = () => mm.revert()
     }
@@ -92,14 +97,33 @@ export function MotionRoot({ lang }: { lang: string }) {
       else window.clearTimeout(idle)
       revert?.()
     }
-  }, [pathname, lang])
+  }, [pathname, lang, mode])
 
   return null
 }
 
-function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean) {
+function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean, calm: boolean) {
   const all = (selector: string) => gsap.utils.toArray<HTMLElement>(selector)
   const cleanups: Array<() => void> = []
+
+  // Statement: words go from faint to full ink as you read down (opacity only,
+  // so it also runs in calm mode).
+  for (const el of all('[data-k="words"]')) {
+    gsap.fromTo(
+      el.querySelectorAll(".wd"),
+      { opacity: 0.14 },
+      {
+        opacity: 1,
+        ease: "none",
+        stagger: 0.12,
+        scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 50%", scrub: true },
+      },
+    )
+  }
+  if (calm) {
+    ScrollTrigger.refresh()
+    return () => {}
+  }
 
   // Hero: the two name lines drift apart, the portrait lifts, details fade.
   for (const hero of all('[data-k="hero"]')) {
@@ -127,20 +151,6 @@ function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean) {
         xPercent: -amount,
         ease: "none",
         scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
-      },
-    )
-  }
-
-  // Statement: words go from faint to full ink as you read down.
-  for (const el of all('[data-k="words"]')) {
-    gsap.fromTo(
-      el.querySelectorAll(".wd"),
-      { opacity: 0.14 },
-      {
-        opacity: 1,
-        ease: "none",
-        stagger: 0.12,
-        scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 50%", scrub: true },
       },
     )
   }

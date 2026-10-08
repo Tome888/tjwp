@@ -351,6 +351,69 @@ html[lang="mk"] {
     color: var(--line);
   }
 
+  .meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .status::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* Readable stack list under the drifting skill rows (About). */
+  .stack {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.25rem var(--gutter);
+    margin-top: 3.5rem;
+  }
+  @media (min-width: 768px) {
+    .stack {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .stack {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
+  .stack__group {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .stack__group h3 {
+    margin-bottom: 0.85rem;
+  }
+  .stack__group li {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .stack__note {
+    max-width: 30em;
+    margin-top: 2.75rem;
+    font-size: 1.05rem;
+    color: var(--soft);
+  }
+
   .avail {
     display: inline-flex;
     align-items: center;
@@ -510,6 +573,26 @@ html[lang="mk"] {
   }
   .dark .theme-toggle__dot {
     transform: rotate(180deg);
+  }
+
+  .motion-toggle {
+    gap: 0.5rem;
+  }
+  .motion-toggle__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--accent);
+  }
+  [data-motion="reduced"] .motion-toggle__dot {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px currentColor;
+  }
+  .motion-toggle__calm,
+  [data-motion="reduced"] .motion-toggle__full {
+    display: none;
+  }
+  [data-motion="reduced"] .motion-toggle__calm {
+    display: inline;
   }
 
   /* Mobile menu (native <dialog>) */
@@ -1572,15 +1655,28 @@ html[lang="mk"] {
 }
 
 /* Load intro: page titles and the hero rise out of their masks. */
-/* Wide screens only: on phones the headline is the LCP element, and any load
-   animation on it delays LCP, so phones get a static headline on load. */
+[data-motion="full"] .intro .c {
+  animation: rise-in 1.1s var(--ease-out) backwards;
+  animation-delay: calc(var(--i) * 40ms);
+}
 @media (min-width: 1024px) {
-  [data-motion="full"] .intro .c {
-    animation: rise-in 1.1s var(--ease-out) backwards;
-    animation-delay: calc(var(--i) * 40ms);
-  }
   [data-motion="full"] .intro-fade {
     animation: lift-in 1.1s var(--ease-out) 0.35s backwards;
+  }
+}
+/* Phones: the first name and the large text blocks are the LCP candidates,
+   and a load animation on them would push LCP to the animation's end. They
+   stay put; the surname rises in under them and the meta line lifts in. */
+@media (max-width: 1023px) {
+  [data-motion="full"] .hero__line--first .c {
+    animation: none;
+  }
+  [data-motion="full"] .hero__line--last .c {
+    animation: rise 1s var(--ease-out) backwards;
+    animation-delay: calc(var(--i) * 45ms);
+  }
+  [data-motion="full"] .hero__meta {
+    animation: lift-in 0.9s var(--ease-out) 0.1s backwards;
   }
 }
 [data-motion="full"] .hero__portrait-frame::after {
@@ -1668,6 +1764,15 @@ html[lang="mk"] {
   }
 }
 
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+[data-motion="full"] .status::before {
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
 /* Filtered rows and the open menu settle in with a short stagger. */
 [data-motion="full"] .pi-row {
   animation: fade-up 0.7s var(--ease-out) backwards;
@@ -1710,22 +1815,27 @@ html[lang="mk"] {
   }
 }
 
-/* Reduced motion: calm but complete; content still arrives, by fading. */
-@media (min-width: 1024px) {
-  [data-motion="reduced"] .intro .c,
-  [data-motion="reduced"] .intro-fade {
-    animation: fade 0.6s ease backwards;
-  }
+/* Calm mode (OS "reduce motion", or the Motion switch): nothing travels
+   across the screen, but the page still comes alive: letters and sections
+   fade in, the statement fills in as you read, hovers stay subtle. */
+[data-motion="reduced"] .intro .c {
+  animation: fade 0.9s ease backwards;
+  animation-delay: calc(var(--i) * 55ms + 100ms);
 }
-@media (prefers-reduced-motion: reduce) {
-  .site-header,
-  .nav-link::after,
-  .theme-toggle__dot,
-  .arrow,
-  .pi-arrow {
-    transition: none !important;
-  }
-  html {
-    scroll-behavior: auto;
-  }
+[data-motion="reduced"] .intro-fade {
+  animation: fade 0.9s ease 0.4s backwards;
+}
+[data-motion="reduced"] .hero__portrait-frame img {
+  animation: fade 1.4s ease 0.2s backwards;
+}
+[data-motion="reduced"] .roll-host:hover .roll__t {
+  text-decoration: underline 1px;
+  text-underline-offset: 0.2em;
+}
+[data-motion="reduced"] .site-header,
+[data-motion="reduced"] .nav-link::after,
+[data-motion="reduced"] .theme-toggle__dot,
+[data-motion="reduced"] .arrow,
+[data-motion="reduced"] .pi-arrow {
+  transition: none !important;
 }
