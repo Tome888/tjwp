@@ -52,22 +52,60 @@
   font-display: swap;
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
-/* Metric-matched fallbacks so the swap to the web fonts doesn't shift layout. */
-@font-face {
-  font-family: "Onest Fallback";
-  src: local("Arial");
-  ascent-override: 92.2%;
-  descent-override: 28.99%;
-  line-gap-override: 0%;
-  size-adjust: 105.2%;
-}
+/* Metric-matched fallbacks so the swap to the web fonts doesn't reflow text.
+   Widths are measured against this site's own EN/MK copy (Playfair at
+   optical size ~40, where wrapping text lives), per style and per script. */
 @font-face {
   font-family: "Playfair Fallback";
   src: local("Times New Roman");
-  ascent-override: 83.38%;
-  descent-override: 29.61%;
+  font-style: normal;
+  ascent-override: 85.72%;
+  descent-override: 30.45%;
   line-gap-override: 0%;
-  size-adjust: 106.2%;
+  size-adjust: 103.30%;
+}
+@font-face {
+  font-family: "Playfair Fallback";
+  src: local("Times New Roman Italic");
+  font-style: italic;
+  ascent-override: 89.67%;
+  descent-override: 31.85%;
+  line-gap-override: 0%;
+  size-adjust: 98.75%;
+}
+@font-face {
+  font-family: "Playfair MK Fallback";
+  src: local("Times New Roman");
+  font-style: normal;
+  ascent-override: 86.46%;
+  descent-override: 30.71%;
+  line-gap-override: 0%;
+  size-adjust: 102.42%;
+}
+@font-face {
+  font-family: "Playfair MK Fallback";
+  src: local("Times New Roman Italic");
+  font-style: italic;
+  ascent-override: 90.44%;
+  descent-override: 32.12%;
+  line-gap-override: 0%;
+  size-adjust: 97.91%;
+}
+@font-face {
+  font-family: "Onest Fallback";
+  src: local("Arial");
+  ascent-override: 92.18%;
+  descent-override: 28.98%;
+  line-gap-override: 0%;
+  size-adjust: 105.23%;
+}
+@font-face {
+  font-family: "Onest MK Fallback";
+  src: local("Arial");
+  ascent-override: 92.91%;
+  descent-override: 29.21%;
+  line-gap-override: 0%;
+  size-adjust: 104.40%;
 }
 
 /* ── Tokens ─────────────────────────────────────────────────────────────── */
@@ -86,6 +124,8 @@
   --grain-opacity: 0.045;
 
   --display-face: "Playfair";
+  --display-fallback: "Playfair Fallback";
+  --text-fallback: "Onest Fallback";
   --pad: clamp(16px, 4vw, 56px);
   --gutter: clamp(12px, 2vw, 28px);
   --header: 4rem;
@@ -102,6 +142,8 @@
 
 html[lang="mk"] {
   --display-face: "Playfair MK";
+  --display-fallback: "Playfair MK Fallback";
+  --text-fallback: "Onest MK Fallback";
 }
 
 .dark {
@@ -131,8 +173,8 @@ html[lang="mk"] {
   --color-band: var(--band);
   --color-band-ink: var(--band-ink);
   --color-band-soft: var(--band-soft);
-  --font-display: var(--display-face), "Playfair Fallback", serif;
-  --font-sans: "Onest", "Onest Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--display-face), var(--display-fallback), serif;
+  --font-sans: "Onest", var(--text-fallback), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ── Base ───────────────────────────────────────────────────────────────── */
