@@ -134,8 +134,8 @@ export const site: Site = {
     ],
     github: "https://github.com/Tome888",
     cv: {
-      en: "cv/tome-jeftimov-cv-en.jpeg",
-      mk: "cv/tome-jeftimov-cv-mk.jpeg",
+      en: "cv/tome-jeftimov-cv-en.pdf",
+      mk: "cv/tome-jeftimov-cv-mk.pdf",
     },
   },
 

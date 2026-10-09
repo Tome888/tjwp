@@ -43,7 +43,7 @@ export interface About {
   skills: SkillGroup[]
   education: Education[]
   github: string
-  /** CV file in /public for each language, e.g. "cv/tome-jeftimov-cv-en.jpeg" */
+  /** CV file in /public for each language, e.g. "cv/tome-jeftimov-cv-en.pdf" */
   cv: Text
 }
 
