@@ -57,12 +57,26 @@ export function MotionRoot({ lang }: { lang: string }) {
   }, [])
 
   // Follow the Motion switch without a reload.
+  // Switching language re-renders the root layout, and React then strips
+  // attributes it didn't set from <html>, including data-motion. The boot
+  // script only runs on a full page load, so put the attribute back here.
   const [mode, setMode] = useState<string | undefined>()
   useEffect(() => {
-    const read = () => setMode(document.documentElement.dataset.motion)
+    const root = document.documentElement
+    const read = () => {
+      if (!root.dataset.motion) root.dataset.motion = preferredMotion()
+      setMode(root.dataset.motion)
+    }
     read()
     window.addEventListener("motionchange", read)
-    return () => window.removeEventListener("motionchange", read)
+    const watch = new MutationObserver(() => {
+      if (!root.dataset.motion) read()
+    })
+    watch.observe(root, { attributes: true, attributeFilter: ["data-motion"] })
+    return () => {
+      window.removeEventListener("motionchange", read)
+      watch.disconnect()
+    }
   }, [])
 
   useEffect(() => {
@@ -118,6 +132,20 @@ export function MotionRoot({ lang }: { lang: string }) {
   }, [pathname, lang, mode])
 
   return null
+}
+
+// Same rule as the boot script in the layout: the Motion switch wins,
+// otherwise the OS "reduce motion" setting.
+function preferredMotion(): "full" | "reduced" {
+  try {
+    const saved = localStorage.getItem("motion")
+    if (saved === "full" || saved === "reduced") return saved
+  } catch {}
+  try {
+    return matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduced" : "full"
+  } catch {
+    return "full"
+  }
 }
 
 function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean, calm: boolean) {
