@@ -20,7 +20,8 @@ import { cn } from "@/lib/utils"
  * milky middle from `--glass-fill` (see globals.css).
  */
 
-type LiquidLens = { destroy(): void }
+type Renderer = { captureSnapshot(): Promise<unknown> }
+type LiquidLens = { destroy(): void; renderer?: Renderer }
 type LiquidGL = ((options: Record<string, unknown>) => LiquidLens | LiquidLens[] | undefined) & {
   registerDynamic(elements: unknown): void
 }
@@ -52,7 +53,7 @@ function tintOf(el: HTMLElement) {
 
 /* ── Shared state for all glass on the page ─────────────────────────────── */
 
-type Control = { sync(): void; off(): void }
+type Control = { sync(): void; off(): void; renderer(): Renderer | null }
 const controls = new Set<Control>()
 
 let watching = false
@@ -74,10 +75,31 @@ function recapture(delay = 500) {
     const wait = MIN_GAP - (performance.now() - lastCapture)
     if (wait > 0) return recapture(wait)
     lastCapture = performance.now()
-    const liquidGL = await load()
-    // registerDynamic([]) re-captures every renderer without adding anything.
-    liquidGL?.registerDynamic([])
+    await snapshot()
   }, delay)
+}
+
+/**
+ * Re-capture every renderer with the page fully revealed: content that
+ * hasn't faded in yet would otherwise be missing from the snapshot, and the
+ * glass would show bare page (black or white) over it. Snapshots only run
+ * when scrolling has stopped, so the briefly forced-visible content is off
+ * screen.
+ */
+async function snapshot() {
+  const renderers = new Set<Renderer>()
+  for (const c of controls) {
+    const r = c.renderer()
+    if (r) renderers.add(r)
+  }
+  if (!renderers.size) return
+  const root = document.documentElement
+  root.classList.add("glass-snapshot")
+  try {
+    await Promise.all([...renderers].map((r) => r.captureSnapshot()))
+  } finally {
+    root.classList.remove("glass-snapshot")
+  }
 }
 
 /** Theme switched: frosted now, fresh glass once the new colours are in. */
@@ -117,7 +139,8 @@ function watch() {
         const el = m.target instanceof Element ? m.target : m.target.parentElement
         return !el?.closest(".glass, dialog")
       })
-      if (outside) recapture()
+      if (!outside) return
+      recapture()
     }).observe(page, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] })
   }
 
@@ -169,11 +192,15 @@ export function Glass({
       if (gone || lens || !liquidGL || !glassAllowed() || !el.offsetWidth) return
       const made = liquidGL({ ...LOOK, snapshot, target: `[data-lgl="${id}"]`, tint: tintOf(el) })
       lens = (Array.isArray(made) ? made[0] : made) ?? null
-      if (lens) el.dataset.live = ""
+      if (!lens) return
+      el.dataset.live = ""
+      // liquidGL's own first snapshot can't see content that hasn't faded
+      // in yet; follow up with a full one once the entrance has played.
+      recapture(1500)
     }
 
     const sync = () => (glassAllowed() && el.offsetWidth && !themeTimer ? on() : off())
-    const control: Control = { sync, off }
+    const control: Control = { sync, off, renderer: () => lens?.renderer ?? null }
     controls.add(control)
     watch()
 
