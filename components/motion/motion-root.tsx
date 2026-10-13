@@ -34,7 +34,7 @@ export function MotionRoot() {
     const scan = () => {
       frame = 0
       document.querySelectorAll("[data-reveal]:not(.is-in)").forEach((el) => {
-        if (!el.closest(".glass-clone")) io.observe(el)
+        io.observe(el)
       })
     }
     scan()
