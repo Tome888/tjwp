@@ -140,6 +140,7 @@ export function Glass({
 
   return (
     <div ref={root} data-lgl={id} className={cn("glass", className)} {...rest}>
+      <span className="glass__fill" aria-hidden="true" />
       <div className="glass__ui">{children}</div>
     </div>
   )

@@ -67,6 +67,7 @@
   --glass-glow: rgba(255, 255, 255, 0.6);
   --glass-select: rgba(255, 255, 255, 0.18);
   --lgl-tint: rgba(255, 255, 255, 0.08);
+  --glass-fill: rgba(246, 246, 248, 0.5);
 
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
@@ -117,6 +118,7 @@
   --glass-glow: rgba(0, 0, 0, 0.55);
   --glass-select: rgba(255, 255, 255, 0.1);
   --lgl-tint: rgba(18, 18, 22, 0.32);
+  --glass-fill: rgba(28, 28, 30, 0.45);
   color-scheme: dark;
 }
 
@@ -590,6 +592,27 @@
     display: flex;
     align-items: center;
   }
+  /* Less see-through in the middle, clear at the rim: a milky layer over the
+     refraction that fades out before the edges, so the bend stays intact.
+     Strength is --glass-fill (per theme). */
+  .glass__fill {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    border-radius: inherit;
+    pointer-events: none;
+    background: var(--glass-fill);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%),
+      linear-gradient(180deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%),
+      linear-gradient(180deg, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  .glass[data-live] .glass__fill {
+    display: block;
+  }
   /* liquidGL turns off taps on the glass itself; the controls take them. */
   .glass[data-live] .glass__ui {
     pointer-events: auto;
@@ -860,6 +883,7 @@
   /* The hero glass sits on a light photo in both themes. */
   .dark .hero__cta {
     --lgl-tint: rgba(255, 255, 255, 0.08);
+    --glass-fill: rgba(246, 246, 248, 0.5);
     --glass-tint: rgba(255, 255, 255, 0.16);
     --glass-frost: rgba(250, 250, 252, 0.72);
     --glass-solid: rgba(248, 248, 250, 0.95);
