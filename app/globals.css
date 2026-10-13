@@ -65,7 +65,7 @@
   --glass-hl: inset 1.5px 1.5px 1px -0.5px rgba(255, 255, 255, 0.95),
     inset -1px -1px 1px -0.5px rgba(255, 255, 255, 0.7), inset 0 0 0 0.5px rgba(255, 255, 255, 0.45);
   --glass-glow: rgba(255, 255, 255, 0.6);
-  --glass-select: rgba(255, 255, 255, 0.18);
+  --glass-select: rgba(255, 255, 255, 0.3);
   --lgl-tint: rgba(255, 255, 255, 0.08);
   --glass-fill: rgba(246, 246, 248, 0.5);
 
@@ -116,7 +116,7 @@
   --glass-hl: inset 1.5px 1.5px 1px -0.5px rgba(255, 255, 255, 0.4),
     inset -1px -1px 1px -0.5px rgba(255, 255, 255, 0.18), inset 0 0 0 0.5px rgba(255, 255, 255, 0.16);
   --glass-glow: rgba(0, 0, 0, 0.55);
-  --glass-select: rgba(255, 255, 255, 0.1);
+  --glass-select: rgba(255, 255, 255, 0.16);
   --lgl-tint: rgba(18, 18, 22, 0.32);
   --glass-fill: rgba(28, 28, 30, 0.45);
   color-scheme: dark;
@@ -735,8 +735,8 @@
     box-shadow: var(--glass-hl);
     pointer-events: none;
     opacity: 0;
-    transition: left 0.55s var(--ease-out), width 0.55s var(--ease-out), transform 0.3s var(--ease-out), opacity 0.2s;
-    transition: left 0.6s var(--spring), width 0.6s var(--spring), transform 0.3s var(--spring-soft), opacity 0.2s;
+    transition: left 0.9s var(--ease-out), width 0.9s var(--ease-out), transform 0.5s var(--ease-out), opacity 0.2s;
+    transition: left 0.95s var(--spring), width 0.95s var(--spring), transform 0.5s var(--spring-soft), opacity 0.2s;
   }
   .glass-select[data-ready] {
     opacity: 1;
@@ -766,11 +766,11 @@
     }
   }
   .tabbar .glass__ui {
-    padding: 6px;
+    padding: 4px;
   }
   .tabbar .glass-select {
-    top: 6px;
-    bottom: 6px;
+    top: 3px;
+    bottom: 3px;
   }
   .tab {
     position: relative;
@@ -1285,8 +1285,11 @@
   html[data-motion="reduced"] dialog.sheet[data-open] {
     opacity: 1;
   }
+  /* flex: 1 alone (0% basis) collapses to nothing in Safari when the sheet
+     has no fixed height, which hid the whole sheet on iPhone. */
   .sheet__scroll {
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
   }

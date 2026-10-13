@@ -134,7 +134,7 @@ function useSelection(container: RefObject<HTMLElement | null>, index: number) {
     previous.current = index
     if (index < 0) return
     setStretch(true)
-    const id = setTimeout(() => setStretch(false), 200)
+    const id = setTimeout(() => setStretch(false), 320)
     return () => clearTimeout(id)
   }, [index])
 
