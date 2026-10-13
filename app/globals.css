@@ -445,48 +445,32 @@
     letter-spacing: -0.006em;
   }
 
+  /* Status labels ("In development"): plain caps text, no pill. */
   .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    height: 24px;
-    padding: 0 10px;
-    border-radius: 999px;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0;
-    background: color-mix(in srgb, var(--indigo) 16%, transparent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--indigo);
   }
   .badge--on-dark {
-    background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
   }
 
-  .status-chip {
+  /* Availability ("Open for new projects"): a plain line with an icon. */
+  .availability {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    height: 32px;
-    padding: 0 14px 0 12px;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--green) 14%, transparent);
-    color: color-mix(in srgb, var(--green) 70%, var(--label));
-    font-size: 14px;
+    gap: 7px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: -0.01em;
+    color: color-mix(in srgb, var(--green) 72%, var(--label));
   }
-  .status-chip__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 50%, transparent);
-  }
-  html[data-motion="full"] .status-chip__dot {
-    animation: pulse 2.2s infinite;
+  .availability svg {
+    font-size: 18px;
+    flex: none;
   }
 
   /* ── Cards ──────────────────────────────────────────────────────────── */
@@ -629,6 +613,40 @@
     .glass {
       background: var(--glass-solid);
     }
+  }
+
+  /* ── Glass buttons ──────────────────────────────────────────────────── */
+  /* Sticky with no offsets never sticks; liquidGL only draws in fixed or
+     sticky elements. Used where there's colour behind the button. */
+  .glass-btn {
+    position: sticky;
+    height: 54px;
+    flex: none;
+    transition: transform 0.5s var(--ease-out);
+    transition: transform 0.5s var(--spring);
+  }
+  .glass-btn:active {
+    transform: scale(0.95, 0.9);
+    transition-duration: 0.12s;
+  }
+  .glass-btn__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    padding: 0 24px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+  }
+  /* On a coloured card: light glass, white text. */
+  .glass-btn--on-color {
+    --glass-frost: rgba(255, 255, 255, 0.22);
+    --glass-solid: rgba(255, 255, 255, 0.3);
+    --glass-fill: rgba(255, 255, 255, 0.14);
+    --lgl-tint: rgba(255, 255, 255, 0.08);
+    --glass-glow: rgba(0, 0, 0, 0.18);
+    color: #ffffff;
   }
 
   /* ── Top bar ────────────────────────────────────────────────────────── */

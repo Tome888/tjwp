@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { CSSProperties } from "react"
-import { ArrowDown, ArrowRight } from "@phosphor-icons/react/dist/ssr"
+import { ArrowDown, ArrowRight, CalendarCheck } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
 import type { Lang } from "@/content/types"
 import { getDict } from "@/lib/i18n"
@@ -27,8 +27,8 @@ export function Hero({ lang }: { lang: Lang }) {
       <div className="hero">
         <div>
           {p.available ? (
-            <p className="status-chip enter">
-              <span className="status-chip__dot" aria-hidden="true" />
+            <p className="availability enter">
+              <CalendarCheck weight="bold" aria-hidden="true" />
               {p.availability[lang]}
             </p>
           ) : null}

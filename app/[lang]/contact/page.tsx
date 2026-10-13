@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import type { CSSProperties } from "react"
-import { ArrowUpRight, GithubLogo, LinkedinLogo, LinkSimple } from "@phosphor-icons/react/dist/ssr"
+import { ArrowUpRight, CalendarCheck, GithubLogo, LinkedinLogo, LinkSimple } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
 import { getDict, langFrom, type LangParams } from "@/lib/i18n"
 import { ContactForm, CopyEmail } from "@/components/contact/contact-form"
@@ -66,8 +66,8 @@ export default async function ContactPage(props: LangParams) {
             </div>
 
             {profile.available ? (
-              <p className="status-chip enter justify-self-start" style={{ "--d": 4 } as Vars}>
-                <span className="status-chip__dot" aria-hidden="true" />
+              <p className="availability enter justify-self-start" style={{ "--d": 4 } as Vars}>
+                <CalendarCheck weight="bold" aria-hidden="true" />
                 {profile.availability[lang]}
               </p>
             ) : null}
