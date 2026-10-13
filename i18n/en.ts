@@ -21,6 +21,7 @@ export const en = {
     close: "Close",
     skip: "Skip to content",
     language: "Language",
+    switchLang: "Switch to Macedonian",
     themeToDark: "Switch to dark theme",
     themeToLight: "Switch to light theme",
     themeLight: "Paper",

@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
-import { preload } from "react-dom"
 import { Analytics } from "@vercel/analytics/next"
 import { ThemeProvider } from "next-themes"
 import { site } from "@/content/site"
@@ -10,12 +9,9 @@ import { SiteFooter } from "@/components/site-footer"
 import { MotionRoot } from "@/components/motion/motion-root"
 import "../globals.css"
 
-// Fonts are self-hosted (see globals.css). Preload exactly the files the
-// current language needs above the fold, so text never waits or reflows.
-const preloadFonts = {
-  en: ["onest-latin.woff2", "playfair-en-normal.woff2", "playfair-en-italic.woff2"],
-  mk: ["onest-latin.woff2", "onest-cyrillic.woff2", "playfair-mk-normal.woff2", "playfair-mk-italic.woff2"],
-}
+// Text uses the system font on Apple devices (SF Pro) and self-hosted Inter
+// elsewhere (see globals.css). Nothing is preloaded: Apple devices never
+// download a font, others fetch Inter only when it's needed.
 
 // Runs before first paint: picks full or calm motion so nothing flashes.
 // A choice made with the Motion switch wins; otherwise the OS setting.
@@ -43,30 +39,28 @@ export async function generateMetadata(props: LangParams): Promise<Metadata> {
       type: "website",
       locale: lang === "mk" ? "mk_MK" : "en_US",
     },
+    // An iOS-style app icon: the TJ mark on a cobalt tile. iOS rounds the
+    // corners of the touch icon itself, so that one is a plain square.
     icons: {
-      icon: [
-        { url: "/tj-light.svg", media: "(prefers-color-scheme: light)" },
-        { url: "/tj-dark.svg", media: "(prefers-color-scheme: dark)" },
-        { url: "/tj-dark.svg", type: "image/svg+xml" },
-      ],
-      apple: "/tj-light.svg",
+      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+      apple: "/apple-icon.png",
     },
   }
 }
 
 export const viewport: Viewport = {
+  // Lets the page run under the iPhone notch and home bar; the bars use
+  // env(safe-area-inset-*) to stay clear of them.
+  viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eee8dc" },
-    { media: "(prefers-color-scheme: dark)", color: "#15130f" },
+    { media: "(prefers-color-scheme: light)", color: "#f2f2f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 }
 
 export default async function RootLayout({ children, params }: LangParams & { children: ReactNode }) {
   const lang = await langFrom({ params })
   const t = getDict(lang)
-  for (const file of preloadFonts[lang]) {
-    preload(`/fonts/${file}`, { as: "font", type: "font/woff2", crossOrigin: "anonymous" })
-  }
 
   return (
     <html lang={lang} suppressHydrationWarning>
@@ -84,9 +78,12 @@ export default async function RootLayout({ children, params }: LangParams & { ch
             firstName={site.profile.firstName[lang]}
             lastName={site.profile.lastName[lang]}
           />
-          <main id="main">{children}</main>
-          <SiteFooter lang={lang} />
-          <MotionRoot lang={lang} />
+          {/* #page is what the liquid glass mirrors; the bars sit outside it. */}
+          <div id="page">
+            <main id="main">{children}</main>
+            <SiteFooter lang={lang} />
+          </div>
+          <MotionRoot />
         </ThemeProvider>
         <Analytics />
       </body>

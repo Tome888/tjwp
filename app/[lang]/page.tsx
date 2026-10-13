@@ -1,8 +1,7 @@
 import { langFrom, type LangParams } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
-import { Products, Services, Statement } from "@/components/home/sections"
-import { Chapters } from "@/components/home/chapters"
-import { CtaBand } from "@/components/cta-band"
+import { Products, Services, Statement, Work } from "@/components/home/sections"
+import { CtaCard } from "@/components/cta-card"
 
 export default async function Home(props: LangParams) {
   const lang = await langFrom(props)
@@ -10,10 +9,10 @@ export default async function Home(props: LangParams) {
     <>
       <Hero lang={lang} />
       <Statement lang={lang} />
+      <Work lang={lang} />
       <Services lang={lang} />
       <Products lang={lang} />
-      <Chapters lang={lang} />
-      <CtaBand lang={lang} />
+      <CtaCard lang={lang} />
     </>
   )
 }

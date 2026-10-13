@@ -19,7 +19,7 @@ export interface Profile {
   location: Text
   /** One line under the name on the home page. */
   tagline: Text
-  /** Short statement on the home page, revealed word by word. */
+  /** Short statement on the home page, under the hero. */
   intro: Text
   /** Shows the availability line with a small accent mark when true. */
   available: boolean
@@ -78,7 +78,7 @@ export interface Project {
   link?: string
   /** Image file in /public/projects/, e.g. "pabau.png". Optional. */
   image?: string
-  /** Show as a chapter on the home page (the first 6 featured are used). */
+  /** Show as a big card on the home page (the first 6 featured are used). */
   featured?: boolean
 }
 

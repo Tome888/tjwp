@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react"
 import type { Dict } from "@/i18n/en"
-import { Roll } from "@/components/motion/kinetic"
+import { Check, Copy, PaperPlaneTilt } from "@phosphor-icons/react"
 
 // Same rules as before; names may now also be written in Cyrillic.
 const rules = {
@@ -90,18 +90,26 @@ Message: ${values.message}
 
   const fieldError = (field: Field) =>
     errors[field] ? (
-      <p id={`f-${field}-error`} className="field__error">
+      <span id={`f-${field}-error`} className="field__error block">
         {errors[field]}
-      </p>
+      </span>
     ) : null
 
+  const row = (field: Field, label: string, input: ReactNode) => (
+    <label className="field" htmlFor={`f-${field}`} data-invalid={errors[field] ? "" : undefined}>
+      <span className="field__label">{label}</span>
+      {input}
+      {fieldError(field)}
+    </label>
+  )
+
   return (
-    <form ref={form} onSubmit={onSubmit} noValidate className="contact-form" aria-label={t.formLabel}>
-      <fieldset className="topics">
-        <legend className="label mb-4">{t.topicLabel}</legend>
-        <div className="flex flex-wrap gap-2">
+    <form ref={form} onSubmit={onSubmit} noValidate className="grid grid-cols-[minmax(0,1fr)] gap-6" aria-label={t.formLabel}>
+      <fieldset className="min-w-0">
+        <legend className="footnote form-group-label">{t.topicLabel}</legend>
+        <div className="chips">
           {topics.map((key) => (
-            <label key={key} className="topic">
+            <label key={key} className="chip cursor-pointer">
               <input
                 type="radio"
                 name="topic"
@@ -110,38 +118,34 @@ Message: ${values.message}
                 onChange={() => setTopic(key)}
                 className="sr-only"
               />
-              <span>{t.topics[key]}</span>
+              {t.topics[key]}
             </label>
           ))}
         </div>
       </fieldset>
 
-      <div className="grid gap-x-[var(--gutter)] md:grid-cols-2">
-        <div className="field" data-invalid={errors.name ? "" : undefined}>
-          <label htmlFor="f-name">{t.name}</label>
-          <input {...bind("name")} autoComplete="name" placeholder={t.namePlaceholder} />
-          {fieldError("name")}
-        </div>
-        <div className="field" data-invalid={errors.phone ? "" : undefined}>
-          <label htmlFor="f-phone">{t.phone}</label>
-          <input {...bind("phone")} type="tel" autoComplete="tel" placeholder={t.phonePlaceholder} />
-          {fieldError("phone")}
-        </div>
-      </div>
-      <div className="field" data-invalid={errors.email ? "" : undefined}>
-        <label htmlFor="f-email">{t.email}</label>
-        <input {...bind("email")} type="email" autoComplete="email" placeholder={t.emailPlaceholder} />
-        {fieldError("email")}
-      </div>
-      <div className="field" data-invalid={errors.message ? "" : undefined}>
-        <label htmlFor="f-message">{t.message}</label>
-        <textarea {...bind("message")} rows={5} placeholder={t.messagePlaceholder} />
-        {fieldError("message")}
+      <div className="fields">
+        {row("name", t.name, <input {...bind("name")} autoComplete="name" placeholder={t.namePlaceholder} />)}
+        {row(
+          "phone",
+          t.phone,
+          <input {...bind("phone")} type="tel" autoComplete="tel" placeholder={t.phonePlaceholder} />,
+        )}
+        {row(
+          "email",
+          t.email,
+          <input {...bind("email")} type="email" autoComplete="email" placeholder={t.emailPlaceholder} />,
+        )}
       </div>
 
-      <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-        <button type="submit" className="btn btn--accent roll-host" disabled={status === "sending"}>
-          <Roll text={status === "sending" ? t.sending : t.send} arrow="right" />
+      <div className="fields">
+        {row("message", t.message, <textarea {...bind("message")} rows={5} placeholder={t.messagePlaceholder} />)}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <button type="submit" className="btn btn--fill w-full sm:w-auto" disabled={status === "sending"}>
+          {status === "sending" ? t.sending : t.send}
+          <PaperPlaneTilt weight="fill" aria-hidden="true" />
         </button>
         <p role="status" className="form-status" data-state={status}>
           {status === "sent" ? t.sent : status === "failed" ? t.failed : ""}
@@ -156,7 +160,7 @@ export function CopyEmail({ email, t }: { email: string; t: Dict["contact"] }) {
   return (
     <button
       type="button"
-      className="label-btn copy-btn"
+      className="btn btn--tinted btn--small"
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(email)
@@ -165,6 +169,7 @@ export function CopyEmail({ email, t }: { email: string; t: Dict["contact"] }) {
         } catch {}
       }}
     >
+      {copied ? <Check weight="bold" aria-hidden="true" /> : <Copy weight="bold" aria-hidden="true" />}
       <span aria-live="polite">{copied ? t.copied : t.copy}</span>
     </button>
   )

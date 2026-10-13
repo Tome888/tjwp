@@ -20,7 +20,7 @@
  *       - `status` → e.g. "In development", shown as a small badge
  *       - no `image` → a typographic placeholder is shown instead
  *       - no `link`  → the "Visit" button is hidden
- *       - `featured: true` → also shown as a chapter on the home page
+ *       - `featured: true` → also shown as a big card on the home page
  *         (the first 6 featured projects are used)
  *  4. Commit. Vercel rebuilds and publishes it in about a minute.
  *

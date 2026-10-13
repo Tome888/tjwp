@@ -3,20 +3,20 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useEffect, useRef, useState, useTransition, type CSSProperties } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, useTransition, type MouseEvent, type RefObject } from "react"
+import { Briefcase, EnvelopeSimple, House, Moon, Sun, User, type Icon } from "@phosphor-icons/react"
 import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
-import { Roll } from "@/components/motion/kinetic"
-import { MotionToggle } from "@/components/motion/motion-toggle"
+import { Glass } from "@/components/glass/glass"
 
 type Nav = Dict["nav"]
 
-const links = [
-  { href: "/", key: "home" },
-  { href: "/about", key: "about" },
-  { href: "/projects", key: "projects" },
-  { href: "/contact", key: "contact" },
-] as const
+const links: Array<{ href: string; key: "home" | "projects" | "about" | "contact"; icon: Icon }> = [
+  { href: "/", key: "home", icon: House },
+  { href: "/projects", key: "projects", icon: Briefcase },
+  { href: "/about", key: "about", icon: User },
+  { href: "/contact", key: "contact", icon: EnvelopeSimple },
+]
 
 export function SiteHeader({
   lang,
@@ -29,141 +29,159 @@ export function SiteHeader({
   firstName: string
   lastName: string
 }) {
-  const pathname = usePathname()
-  const bar = useRef<HTMLElement>(null)
-  const menu = useRef<HTMLDialogElement>(null)
-  const [menuOpen, setMenuOpen] = useState(false)
+  // On the server this is the internal path (/en/projects); in the browser
+  // the visible one (/projects). Strip the language so both agree.
+  const pathname = usePathname().replace(/^\/(en|mk)(?=\/|$)/, "") || "/"
+  const name = `${firstName} ${lastName}`
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`))
+  const activeIndex = links.findIndex((l) => isActive(l.href))
+  const pageTitle = activeIndex > 0 ? t[links[activeIndex].key] : name
+  const collapsed = useCollapsedTitle(pathname)
 
-  // Hide while scrolling down, show again on scroll up.
-  useEffect(() => {
-    const el = bar.current
-    if (!el) return
-    let last = window.scrollY
-    let ticking = false
-    const update = () => {
-      ticking = false
-      const y = window.scrollY
-      el.dataset.scrolled = y > 8 ? "true" : "false"
-      if (Math.abs(y - last) < 6) return
-      el.dataset.hidden = y > last && y > 160 ? "true" : "false"
-      last = y
-    }
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true
-        requestAnimationFrame(update)
-      }
-    }
-    update()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+  // Tapping the tab you're already on scrolls back to the top, as in iOS.
+  const onNav = (e: MouseEvent, href: string) => {
+    if (!isActive(href)) return
+    e.preventDefault()
+    const calm = document.documentElement.dataset.motion === "reduced"
+    window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" })
+  }
 
-  useEffect(() => {
-    menu.current?.close()
-  }, [pathname])
-
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
+  const desktop = useRef<HTMLDivElement>(null)
+  const phone = useRef<HTMLDivElement>(null)
+  const desktopBlob = useSelection(desktop, activeIndex)
+  const phoneBlob = useSelection(phone, activeIndex)
 
   return (
     <>
-      <header
-        ref={bar}
-        className="site-header"
-        data-hidden="false"
-        data-scrolled="false"
-        onFocusCapture={() => bar.current && (bar.current.dataset.hidden = "false")}
-      >
-        <div className="wrap flex h-16 items-center justify-between gap-6 md:h-20">
-          <Link href="/" className="brand roll-host" aria-label={`${firstName} ${lastName}, ${t.home}`}>
-            <span className="display text-[1.35rem] leading-none md:text-[1.6rem]">
-              {firstName} <em>{lastName}</em>
-            </span>
-          </Link>
+      <Glass fixed className="topbar" data-collapsed={collapsed ? "true" : "false"}>
+        <Link href="/" className="topbar__title" aria-label={`${name}, ${t.home}`} onClick={(e) => onNav(e, "/")}>
+          <span className="md:hidden">{pageTitle}</span>
+          <span className="hidden md:inline">{name}</span>
+        </Link>
 
-          <nav aria-label={t.label} className="hidden lg:block">
-            <ul className="flex items-center gap-10">
-              {links.map((link, i) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="nav-link roll-host"
-                    aria-current={isActive(link.href) ? "page" : undefined}
-                  >
-                    <span className="nav-link__num" aria-hidden="true">
-                      0{i}
-                    </span>
-                    <Roll text={t[link.key]} />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="flex items-center gap-5">
-            <LangSwitch lang={lang} label={t.language} />
-            <div className="hidden lg:block">
-              <ThemeToggle t={t} />
-            </div>
-            <button
-              type="button"
-              className="label-btn lg:hidden"
-              aria-haspopup="dialog"
-              aria-expanded={menuOpen}
-              onClick={() => menu.current?.showModal()}
-            >
-              {t.menu}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <dialog
-        ref={menu}
-        className="menu"
-        aria-label={t.label}
-        onClose={() => setMenuOpen(false)}
-        onToggle={(e) => setMenuOpen((e.target as HTMLDialogElement).open)}
-      >
-        <div className="wrap flex h-16 items-center justify-between">
-          <span className="display text-[1.35rem]">
-            {firstName} <em>{lastName}</em>
-          </span>
-          <button type="button" className="label-btn" onClick={() => menu.current?.close()}>
-            {t.close}
-          </button>
-        </div>
-        <nav aria-label={t.label} className="wrap mt-[8vh]">
-          <ul className="menu__list">
-            {links.map((link, i) => (
-              <li key={link.href} style={{ "--d": i } as CSSProperties}>
-                <Link href={link.href} aria-current={pathname === link.href ? "page" : undefined}>
-                  <span className="menu__num">0{i}</span>
-                  {t[link.key]}
-                </Link>
-              </li>
+        <nav aria-label={t.label} className="topbar__links">
+          <div ref={desktop} className="relative flex h-full items-center">
+            <span className="glass-select" {...desktopBlob} aria-hidden="true" />
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="topbar__link"
+                aria-current={isActive(link.href) ? "page" : undefined}
+                onClick={(e) => onNav(e, link.href)}
+              >
+                {t[link.key]}
+              </Link>
             ))}
-          </ul>
+          </div>
         </nav>
-        <div className="wrap menu__foot flex flex-wrap items-center justify-between gap-4">
+
+        <div className="topbar__tools">
+          <LangSwitch lang={lang} t={t} />
           <ThemeToggle t={t} />
-          <MotionToggle t={t} />
         </div>
-      </dialog>
+      </Glass>
+
+      <Glass fixed className="tabbar">
+        <nav aria-label={t.label} ref={phone} className="relative flex h-full w-full items-center">
+          <span className="glass-select" {...phoneBlob} aria-hidden="true" />
+          {links.map((link) => {
+            const active = isActive(link.href)
+            const Icon = link.icon
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="tab"
+                aria-current={active ? "page" : undefined}
+                onClick={(e) => onNav(e, link.href)}
+              >
+                <Icon weight={active ? "fill" : "regular"} aria-hidden="true" />
+                {t[link.key]}
+              </Link>
+            )
+          })}
+        </nav>
+      </Glass>
     </>
   )
 }
 
-function LangSwitch({ lang, label }: { lang: Lang; label: string }) {
+/**
+ * Places the glass selection blob under the active item and lets it spring
+ * (with a quick liquid stretch) when the active item changes.
+ */
+function useSelection(container: RefObject<HTMLElement | null>, index: number) {
+  const [box, setBox] = useState<{ left: number; width: number } | null>(null)
+  const [stretch, setStretch] = useState(false)
+  const previous = useRef(index)
+
+  useLayoutEffect(() => {
+    const el = container.current
+    if (!el) return
+    const update = () => {
+      const target = el.querySelectorAll<HTMLElement>("a")[index]
+      setBox(target && target.offsetWidth ? { left: target.offsetLeft, width: target.offsetWidth } : null)
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [container, index])
+
+  useEffect(() => {
+    if (previous.current === index) return
+    previous.current = index
+    if (index < 0) return
+    setStretch(true)
+    const id = setTimeout(() => setStretch(false), 200)
+    return () => clearTimeout(id)
+  }, [index])
+
+  return {
+    style: box ? { left: box.left, width: box.width } : undefined,
+    "data-ready": box ? "" : undefined,
+    "data-stretch": stretch ? "" : undefined,
+  }
+}
+
+/**
+ * On phones the top bar shows the page title once the big title on the page
+ * has scrolled away, like an iOS navigation bar.
+ */
+function useCollapsedTitle(pathname: string) {
+  const [collapsed, setCollapsed] = useState(false)
+  useEffect(() => {
+    setCollapsed(false)
+    let io: IntersectionObserver | null = null
+    const id = requestAnimationFrame(() => {
+      const title = document.querySelector("#page [data-large-title]")
+      if (!title) return
+      io = new IntersectionObserver(
+        ([entry]) => setCollapsed(!entry.isIntersecting && entry.boundingClientRect.top < 80),
+        { rootMargin: "-70px 0px 0px 0px" },
+      )
+      io.observe(title)
+    })
+    return () => {
+      cancelAnimationFrame(id)
+      io?.disconnect()
+    }
+  }, [pathname])
+  return collapsed
+}
+
+function LangSwitch({ lang, t }: { lang: Lang; t: Nav }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
+  const next: Lang = lang === "en" ? "mk" : "en"
 
   // Each language is its own prerendered page set behind the same URL, so a
   // switch re-requests the current page; the proxy serves the new language.
-  const choose = (next: Lang) => {
-    if (next === lang) return
-    document.cookie = `lang=${next}; path=/; max-age=31536000; samesite=lax`
-    document.documentElement.lang = next
+  const choose = (target: Lang) => {
+    if (target === lang) return
+    document.cookie = `lang=${target}; path=/; max-age=31536000; samesite=lax`
+    document.documentElement.lang = target
     startTransition(() => router.refresh())
   }
 
@@ -174,18 +192,21 @@ function LangSwitch({ lang, label }: { lang: Lang; label: string }) {
       const old = localStorage.getItem("language")
       if (old === "mk" || old === "en") choose(old)
     } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div role="group" aria-label={label} className="lang" data-pending={pending || undefined}>
-      <button type="button" lang="en" aria-pressed={lang === "en"} onClick={() => choose("en")}>
-        EN
-      </button>
-      <span aria-hidden="true">/</span>
-      <button type="button" lang="mk" aria-pressed={lang === "mk"} onClick={() => choose("mk")}>
-        MK
-      </button>
-    </div>
+    <button
+      type="button"
+      lang={next}
+      className="icon-btn"
+      aria-label={t.switchLang}
+      title={t.switchLang}
+      data-pending={pending || undefined}
+      onClick={() => choose(next)}
+    >
+      {next.toUpperCase()}
+    </button>
   )
 }
 
@@ -198,13 +219,12 @@ function ThemeToggle({ t }: { t: Nav }) {
   return (
     <button
       type="button"
-      className="theme-toggle label-btn"
+      className="icon-btn text-[21px]"
       aria-label={dark ? t.themeToLight : t.themeToDark}
+      title={dark ? t.themeToLight : t.themeToDark}
       onClick={() => setTheme(dark ? "light" : "dark")}
     >
-      <span className="theme-toggle__dot" aria-hidden="true" />
-      <span className="dark:hidden">{t.themeLight}</span>
-      <span className="hidden dark:inline">{t.themeDark}</span>
+      {dark ? <Sun weight="bold" aria-hidden="true" /> : <Moon weight="bold" aria-hidden="true" />}
     </button>
   )
 }

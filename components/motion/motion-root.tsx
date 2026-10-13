@@ -1,32 +1,23 @@
 "use client"
 
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
-import type { gsap as GSAP } from "gsap"
-import type { ScrollTrigger as ST } from "gsap/ScrollTrigger"
+import { useEffect } from "react"
 
 declare global {
   interface Window {
     __motionReady?: boolean
-    __motionArmed?: boolean
   }
 }
 
 /*
- * Two layers of motion:
- * 1. Reveals ([data-reveal]): an IntersectionObserver adds .is-in and CSS does
- *    the transition. No library, works with reduced motion (opacity only).
- * 2. Scroll-linked effects ([data-k]): GSAP + ScrollTrigger, loaded lazily once
- *    the browser is idle. Pinning is native `position: sticky`; GSAP only
- *    scrubs transforms and opacity.
- *
- * html[data-motion] is "full" or "reduced" (calm). It starts from the OS
- * setting and can be overridden with the Motion switch (see MotionToggle).
- * Calm mode keeps opacity-only effects and drops movement.
+ * Motion is CSS: springs on press, reveals as sections scroll in, sheets
+ * that slide up. This component only does two small jobs:
+ * 1. Reveals ([data-reveal]): an IntersectionObserver adds .is-in and CSS
+ *    runs the transition (opacity only in Calm mode).
+ * 2. Keeps html[data-motion] ("full" or "reduced"/Calm) in place. It is set
+ *    before first paint by the boot script in the layout and can be changed
+ *    with the Motion switch (see MotionToggle).
  */
-export function MotionRoot({ lang }: { lang: string }) {
-  const pathname = usePathname()
-
+export function MotionRoot() {
   useEffect(() => {
     window.__motionReady = true
     const io = new IntersectionObserver(
@@ -37,18 +28,21 @@ export function MotionRoot({ lang }: { lang: string }) {
           io.unobserve(entry.target)
         }
       },
-      { rootMargin: "0px 0px -8% 0px" },
+      { rootMargin: "0px 0px -6% 0px" },
     )
     let frame = 0
     const scan = () => {
       frame = 0
-      document.querySelectorAll("[data-reveal]:not(.is-in)").forEach((el) => io.observe(el))
+      document.querySelectorAll("[data-reveal]:not(.is-in)").forEach((el) => {
+        if (!el.closest(".glass-clone")) io.observe(el)
+      })
     }
     scan()
+    const page = document.getElementById("page") ?? document.body
     const mo = new MutationObserver(() => {
       if (!frame) frame = requestAnimationFrame(scan)
     })
-    mo.observe(document.body, { childList: true, subtree: true })
+    mo.observe(page, { childList: true, subtree: true })
     return () => {
       io.disconnect()
       mo.disconnect()
@@ -56,87 +50,26 @@ export function MotionRoot({ lang }: { lang: string }) {
     }
   }, [])
 
-  // Follow the Motion switch without a reload.
   // Switching language re-renders the root layout, and React then strips
   // attributes it didn't set from <html>, including data-motion. The boot
   // script only runs on a full page load, so put the attribute back here.
-  const [mode, setMode] = useState<string | undefined>()
   useEffect(() => {
     const root = document.documentElement
-    const read = () => {
+    const restore = () => {
       if (!root.dataset.motion) root.dataset.motion = preferredMotion()
-      setMode(root.dataset.motion)
     }
-    read()
-    window.addEventListener("motionchange", read)
-    const watch = new MutationObserver(() => {
-      if (!root.dataset.motion) read()
-    })
+    restore()
+    const watch = new MutationObserver(restore)
     watch.observe(root, { attributes: true, attributeFilter: ["data-motion"] })
-    return () => {
-      window.removeEventListener("motionchange", read)
-      watch.disconnect()
-    }
+    return () => watch.disconnect()
   }, [])
-
-  useEffect(() => {
-    if (!mode) return
-    if (!document.querySelector("[data-k]")) return
-    // Calm mode's only scroll effect (the statement) is CSS where supported.
-    if (mode === "reduced" && CSS.supports("animation-timeline: view()")) return
-
-    let cancelled = false
-    let revert: (() => void) | undefined
-
-    const run = async () => {
-      const [{ gsap }, { ScrollTrigger }] = await Promise.all([
-        import("gsap"),
-        import("gsap/ScrollTrigger"),
-      ])
-      if (cancelled) return
-      gsap.registerPlugin(ScrollTrigger)
-      const mm = gsap.matchMedia()
-      mm.add({ wide: "(min-width: 1024px)", narrow: "(max-width: 1023px)" }, (context) => {
-        const { wide } = context.conditions as Record<string, boolean>
-        return setup(gsap, ScrollTrigger, wide, mode === "reduced")
-      })
-      document.fonts?.ready.then(() => !cancelled && ScrollTrigger.refresh())
-      revert = () => mm.revert()
-    }
-
-    // Every GSAP effect is scroll-linked, so nothing needs it before the first
-    // scroll or touch. Waiting keeps its start-up off the main thread while
-    // the page loads; after that, later pages start it straight away.
-    let idle = 0
-    const start = () => {
-      window.__motionArmed = true
-      idle = window.requestIdleCallback
-        ? window.requestIdleCallback(run, { timeout: 300 })
-        : window.setTimeout(run, 50)
-    }
-    const events = ["scroll", "wheel", "touchstart", "pointerdown", "keydown"] as const
-    const arm = () => {
-      events.forEach((e) => window.removeEventListener(e, arm))
-      start()
-    }
-    if (window.__motionArmed || window.scrollY > 0) start()
-    else events.forEach((e) => window.addEventListener(e, arm, { passive: true, once: true }))
-
-    return () => {
-      cancelled = true
-      events.forEach((e) => window.removeEventListener(e, arm))
-      if (window.cancelIdleCallback) window.cancelIdleCallback(idle)
-      else window.clearTimeout(idle)
-      revert?.()
-    }
-  }, [pathname, lang, mode])
 
   return null
 }
 
 // Same rule as the boot script in the layout: the Motion switch wins,
 // otherwise the OS "reduce motion" setting.
-function preferredMotion(): "full" | "reduced" {
+export function preferredMotion(): "full" | "reduced" {
   try {
     const saved = localStorage.getItem("motion")
     if (saved === "full" || saved === "reduced") return saved
@@ -146,127 +79,4 @@ function preferredMotion(): "full" | "reduced" {
   } catch {
     return "full"
   }
-}
-
-function setup(gsap: typeof GSAP, ScrollTrigger: typeof ST, wide: boolean, calm: boolean) {
-  const all = (selector: string) => gsap.utils.toArray<HTMLElement>(selector)
-  const cleanups: Array<() => void> = []
-
-  // Statement: words go from faint to full ink as you read down (opacity only,
-  // so it also runs in calm mode). CSS scroll timelines do this where supported.
-  const cssWords = CSS.supports("animation-timeline: view()")
-  for (const el of cssWords ? [] : all('[data-k="words"]')) {
-    gsap.fromTo(
-      el.querySelectorAll(".wd"),
-      { opacity: 0.5 },
-      {
-        opacity: 1,
-        ease: "none",
-        stagger: 0.12,
-        scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 50%", scrub: true },
-      },
-    )
-  }
-  if (calm) {
-    ScrollTrigger.refresh()
-    return () => {}
-  }
-
-  // Hero: the two name lines drift apart, the portrait lifts, details fade.
-  for (const hero of all('[data-k="hero"]')) {
-    const tl = gsap.timeline({
-      defaults: { ease: "none" },
-      scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
-    })
-    hero.querySelectorAll<HTMLElement>("[data-k-line]").forEach((line) => {
-      const dir = Number(line.dataset.kLine) || 1
-      tl.to(line, { xPercent: dir * (wide ? 16 : 9) }, 0)
-    })
-    const portrait = hero.querySelector("[data-k-portrait]")
-    if (portrait) tl.to(portrait, { yPercent: wide ? -22 : -10, scale: 0.94 }, 0)
-    const fade = hero.querySelectorAll("[data-k-fade]")
-    if (fade.length) tl.to(fade, { opacity: 0, y: -30 }, 0)
-  }
-
-  // Horizontal drift against the scroll (product names, skill rows, headings).
-  for (const el of cssWords ? [] : all('[data-k="drift"]')) {
-    const amount = (Number(el.dataset.kAmount) || 10) * (wide ? 1 : 0.5)
-    gsap.fromTo(
-      el,
-      { xPercent: amount },
-      {
-        xPercent: -amount,
-        ease: "none",
-        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
-      },
-    )
-  }
-
-  // Headlines that grow into place.
-  for (const el of all('[data-k="scale"]')) {
-    gsap.fromTo(
-      el,
-      { scale: wide ? 0.78 : 0.9, transformOrigin: "0% 100%" },
-      {
-        scale: 1,
-        ease: "none",
-        scrollTrigger: { trigger: el, start: "top bottom", end: "top 35%", scrub: true },
-      },
-    )
-  }
-
-  // Footer wordmark rises as the page ends.
-  for (const el of all('[data-k="rise"]')) {
-    gsap.fromTo(
-      el,
-      { yPercent: 45 },
-      {
-        yPercent: 0,
-        ease: "none",
-        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom bottom", scrub: true },
-      },
-    )
-  }
-
-  // Selected work: chapters pinned with CSS sticky, transitions scrubbed.
-  if (wide) {
-    for (const el of all('[data-k="chapters"]')) cleanups.push(chapters(gsap, el))
-  }
-
-  ScrollTrigger.refresh()
-  return () => cleanups.forEach((fn) => fn())
-}
-
-function chapters(gsap: typeof GSAP, el: HTMLElement) {
-  const items = Array.from(el.querySelectorAll<HTMLElement>("[data-chapter]"))
-  const n = items.length
-  if (n < 2) return () => {}
-
-  el.classList.add("is-pinned")
-  const pick = (root: HTMLElement, s: string) => root.querySelectorAll<HTMLElement>(s)
-  const tl = gsap.timeline({
-    defaults: { ease: "power3.inOut" },
-    scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 0.6 },
-  })
-
-  for (let i = 1; i < n; i++) {
-    const prev = items[i - 1]
-    const cur = items[i]
-    const at = i - 1 + 0.3
-    tl.to(pick(prev, "[data-ch-title] .c"), { yPercent: -120, stagger: { amount: 0.12 }, duration: 0.3 }, at)
-      .to(pick(prev, "[data-ch-body]"), { autoAlpha: 0, y: -20, duration: 0.25 }, at)
-      .fromTo(pick(cur, "[data-ch-frame]"), { yPercent: 101 }, { yPercent: 0, duration: 0.55 }, at + 0.05)
-      .fromTo(pick(cur, "[data-ch-img]"), { yPercent: -40, scale: 1.12 }, { yPercent: 0, scale: 1, duration: 0.55 }, at + 0.05)
-      .fromTo(
-        pick(cur, "[data-ch-title] .c"),
-        { yPercent: 120 },
-        { yPercent: 0, stagger: { amount: 0.12 }, duration: 0.3 },
-        at + 0.3,
-      )
-      .fromTo(pick(cur, "[data-ch-body]"), { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.25 }, at + 0.4)
-      .to(pick(el, "[data-ch-count]"), { yPercent: (-100 * i) / n, duration: 0.45 }, at + 0.05)
-  }
-  tl.fromTo(pick(el, "[data-ch-bar]"), { scaleX: 1 / n }, { scaleX: 1, ease: "none", duration: n - 0.4 }, 0)
-
-  return () => el.classList.remove("is-pinned")
 }

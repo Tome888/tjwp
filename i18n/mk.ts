@@ -23,6 +23,7 @@ export const mk: Dict = {
     close: "Затвори",
     skip: "Кон содржината",
     language: "Јазик",
+    switchLang: "Префрли на англиски",
     themeToDark: "Вклучи темна тема",
     themeToLight: "Вклучи светла тема",
     themeLight: "Хартија",

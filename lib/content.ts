@@ -19,7 +19,7 @@ export const projects: ProjectEntry[] = site.projects.map((project, index) => {
   return { ...project, slug, index }
 })
 
-// Home page chapters: featured projects, or the first four if none are marked.
+// Home page cards: featured projects, or the first four if none are marked.
 const marked = projects.filter((p) => p.featured)
 export const featuredProjects = (marked.length ? marked : projects).slice(0, marked.length ? 6 : 4)
 
@@ -29,4 +29,19 @@ export const pad = (n: number) => String(n).padStart(2, "0")
 
 export function localize(lang: Lang) {
   return (text: Text) => text[lang]
+}
+
+/** A project in one language, as the project cards and sheet expect it. */
+export function toCard(p: ProjectEntry, lang: Lang) {
+  return {
+    slug: p.slug,
+    title: p.title[lang],
+    summary: p.summary[lang],
+    details: p.details[lang],
+    tags: p.tags,
+    role: p.role?.[lang],
+    status: p.status?.[lang],
+    link: p.link,
+    image: imagePath(p.image),
+  }
 }
