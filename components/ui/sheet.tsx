@@ -1,6 +1,7 @@
 "use client"
 
-import { useCallback, useEffect, useRef, type PointerEvent, type ReactNode } from "react"
+import { useCallback, useEffect, useRef, useState, type PointerEvent, type ReactNode } from "react"
+import { createPortal } from "react-dom"
 import { X } from "@phosphor-icons/react"
 
 /**
@@ -8,6 +9,10 @@ import { X } from "@phosphor-icons/react"
  * bottom while the page behind it shrinks back, and can be swiped down to
  * close (from the top handle or the image). On wider screens it opens as a
  * centered card. Esc, the close button and a tap outside also close it.
+ *
+ * It's rendered into <body>, outside #page: #page shrinks back while a sheet
+ * is open, and Safari would place the sheet relative to that shrunken page
+ * (off screen) instead of the screen.
  */
 export function Sheet({
   open,
@@ -27,6 +32,8 @@ export function Sheet({
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
   const closing = useRef(0)
+  const [host, setHost] = useState<HTMLElement | null>(null)
+  useEffect(() => setHost(document.body), [])
 
   const finish = useCallback(() => {
     const d = dialog.current
@@ -66,7 +73,7 @@ export function Sheet({
     } else if (!open && d.open) {
       requestClose()
     }
-  }, [open, requestClose])
+  }, [open, requestClose, host])
 
   useEffect(
     () => () => {
@@ -114,7 +121,8 @@ export function Sheet({
     onPointerCancel: onPointerUp,
   }
 
-  return (
+  if (!host) return null
+  return createPortal(
     <dialog
       ref={dialog}
       className="sheet"
@@ -142,6 +150,7 @@ export function Sheet({
         ) : null}
         {children}
       </div>
-    </dialog>
+    </dialog>,
+    host,
   )
 }
