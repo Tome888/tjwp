@@ -60,7 +60,7 @@ export function Hero({ lang }: { lang: Lang }) {
             sizes="(min-width: 900px) 46vw, 100vw"
             className="object-cover object-[50%_28%]"
           />
-          <Glass className="hero__cta">
+          <Glass className="hero__cta" snapshot=".hero__card">
             <Link href="/contact">
               {t.start}
               <ArrowRight weight="bold" aria-hidden="true" />

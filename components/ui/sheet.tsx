@@ -118,6 +118,7 @@ export function Sheet({
     <dialog
       ref={dialog}
       className="sheet"
+      data-liquid-ignore=""
       aria-labelledby={labelledBy}
       onCancel={(e) => {
         e.preventDefault()
