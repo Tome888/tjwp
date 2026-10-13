@@ -121,6 +121,12 @@ function watch() {
     }).observe(page, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] })
   }
 
+  // Images arrive late (Safari loads lazy images only near the viewport);
+  // without a new snapshot the glass would show an empty spot instead.
+  page?.addEventListener("load", (e) => {
+    if (e.target instanceof HTMLImageElement) recapture()
+  }, true)
+
   window.matchMedia("(prefers-reduced-transparency: reduce)").addEventListener("change", () => {
     for (const c of controls) c.sync()
   })

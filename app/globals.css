@@ -845,6 +845,8 @@
   }
   .hero__card {
     position: relative;
+    display: flex;
+    align-items: flex-end;
     aspect-ratio: 1 / 1.05;
     border-radius: 32px;
     overflow: hidden;
@@ -855,10 +857,13 @@
       aspect-ratio: 4 / 5;
     }
   }
+  /* Sticky with no offsets never sticks; it lets liquidGL draw the button's
+     glass inside the button itself (it only draws in fixed or sticky
+     elements), so the photo can't cover it. Flex on the card puts it
+     bottom-left. */
   .hero__cta {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
+    position: sticky;
+    margin: 0 0 16px 16px;
     height: 56px;
   }
   .hero__cta a {
