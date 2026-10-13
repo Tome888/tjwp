@@ -22,7 +22,9 @@ import { cn } from "@/lib/utils"
 type Lens = {
   el: HTMLElement
   rim: HTMLElement
+  /** Masked wrapper (soft edges) around `blur`, which holds the copy. */
   core: HTMLElement
+  blur: HTMLElement
   fixed: boolean
   w: number
   h: number
@@ -31,11 +33,13 @@ type Lens = {
   y: number
 }
 
-// How far the rim bends content, in px, and how much the core magnifies.
-const RIM_X = 16
-const RIM_Y = 5
-const CORE_X = 3
-const CORE_Y = 1.5
+// How strongly the rim bends content (magnification at the edges) and how
+// much the blurred middle magnifies. The horizontal bend is capped so wide
+// desktop bars don't pull in content from far away.
+const RIM = 0.2
+const RIM_MAX_X = 60
+const CORE = 0.05
+const CORE_MAX_X = 20
 
 const lenses = new Set<Lens>()
 let source: HTMLElement | null = null
@@ -76,11 +80,11 @@ function attach(lens: Lens) {
   // Hidden glass (the tab bar on desktop) doesn't need a copy of the page.
   if (!lens.el.offsetWidth) {
     lens.rim.replaceChildren()
-    lens.core.replaceChildren()
+    lens.blur.replaceChildren()
     delete lens.el.dataset.live
     return
   }
-  for (const layer of [lens.rim, lens.core]) {
+  for (const layer of [lens.rim, lens.blur]) {
     const copy = template.cloneNode(true) as HTMLElement
     copy.style.width = `${srcWidth}px`
     layer.replaceChildren(copy)
@@ -106,11 +110,13 @@ function measure() {
     const fx = Math.round(Math.min(lens.h * 0.36, 22))
     const fy = Math.round(lens.h * 0.2)
     const mask = `linear-gradient(90deg,transparent 0,#000 ${fx}px,#000 calc(100% - ${fx}px),transparent 100%),linear-gradient(180deg,transparent 0,#000 ${fy}px,#000 calc(100% - ${fy}px),transparent 100%)`
-    const s = lens.core.style as CSSStyleDeclaration & { webkitMaskComposite?: string }
-    s.webkitMaskImage = mask
-    s.maskImage = mask
-    s.webkitMaskComposite = "source-in"
-    s.maskComposite = "intersect"
+    // Kept on its own element: Safari mis-renders a mask and a filter on the
+    // same element, so the blur lives one level down.
+    const s = lens.core.style
+    s.setProperty("-webkit-mask-image", mask)
+    s.setProperty("mask-image", mask)
+    s.setProperty("-webkit-mask-composite", "source-in")
+    s.setProperty("mask-composite", "intersect")
     if (lens.el.dataset.live !== undefined) place(lens)
   }
 }
@@ -123,8 +129,8 @@ function place(lens: Lens) {
   const cx = w / 2
   const cy = h / 2
   const layers: Array<[HTMLElement, number, number]> = [
-    [lens.rim, 1 + (2 * RIM_X) / w, 1 + (2 * RIM_Y) / h],
-    [lens.core, 1 + (2 * CORE_X) / w, 1 + (2 * CORE_Y) / h],
+    [lens.rim, 1 + Math.min(RIM, (2 * RIM_MAX_X) / w), 1 + RIM],
+    [lens.blur, 1 + Math.min(CORE, (2 * CORE_MAX_X) / w), 1 + CORE],
   ]
   for (const [layer, sx, sy] of layers) {
     const copy = layer.firstElementChild as HTMLElement | null
@@ -209,10 +215,21 @@ export function Glass({
   const root = useRef<HTMLDivElement>(null)
   const rim = useRef<HTMLDivElement>(null)
   const core = useRef<HTMLDivElement>(null)
+  const blur = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!root.current || !rim.current || !core.current) return
-    const lens: Lens = { el: root.current, rim: rim.current, core: core.current, fixed, w: 0, h: 0, x: 0, y: 0 }
+    if (!root.current || !rim.current || !core.current || !blur.current) return
+    const lens: Lens = {
+      el: root.current,
+      rim: rim.current,
+      core: core.current,
+      blur: blur.current,
+      fixed,
+      w: 0,
+      h: 0,
+      x: 0,
+      y: 0,
+    }
     register(lens)
     return () => unregister(lens)
   }, [fixed])
@@ -220,7 +237,9 @@ export function Glass({
   return (
     <div ref={root} className={cn("glass", className)} {...rest}>
       <div ref={rim} className="glass__layer glass__rim" data-glass-layer aria-hidden="true" />
-      <div ref={core} className="glass__layer glass__core" data-glass-layer aria-hidden="true" />
+      <div ref={core} className="glass__layer glass__core" data-glass-layer aria-hidden="true">
+        <div ref={blur} className="glass__blur" />
+      </div>
       <span className="glass__tint" aria-hidden="true" />
       <span className="glass__hl" aria-hidden="true" />
       <div className="glass__ui">{children}</div>

@@ -58,7 +58,7 @@
   --red: #ff3b30;
 
   /* Liquid glass */
-  --glass-tint: rgba(255, 255, 255, 0.18);
+  --glass-tint: rgba(255, 255, 255, 0.14);
   --glass-frost: rgba(250, 250, 252, 0.72);
   --glass-solid: rgba(248, 248, 250, 0.95);
   --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -592,18 +592,27 @@
   .glass[data-live] .glass__layer {
     display: block;
   }
+  /* Each filter runs on a glass-sized box, never on the full-page copy,
+     and the copies are not GPU layers: a page-sized layer is too big for
+     iOS, which then silently drops it. */
   .glass__rim {
-    filter: blur(0.8px) saturate(1.4);
+    filter: blur(0.8px) saturate(1.35);
   }
-  .glass__core {
-    filter: blur(9px) saturate(1.5);
+  .glass__blur {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    filter: blur(7px) saturate(1.45);
+  }
+  .dark .glass__blur {
+    filter: blur(9px) saturate(1.45);
   }
   .glass__clone {
     position: absolute;
     top: 0;
     left: 0;
     transform-origin: 0 0;
-    will-change: transform;
     background: var(--bg);
   }
   .glass__tint,
