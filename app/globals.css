@@ -1666,14 +1666,6 @@ html[data-motion] [data-reveal]:not(.is-in) {
 html[data-motion="reduced"] [data-reveal]:not(.is-in) {
   transform: none;
 }
-/* While the liquid glass takes a snapshot, content that hasn't faded in yet
-   counts as visible, so the glass never shows a hole over it. Snapshots run
-   only when scrolling has stopped, so this is off screen. */
-html.glass-snapshot [data-reveal]:not(.is-in) {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-}
 
 html[data-motion] .enter {
   animation: enter 0.8s var(--ease-out) both;
