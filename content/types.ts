@@ -19,6 +19,8 @@ export interface Profile {
   /** The big line under your name on the home page, e.g. "Software Developer". */
   headline: Text
   location: Text
+  /** Shown in the hero and on About, e.g. "EU citizen". */
+  citizenship: Text
   /** One line under the name on the home page. */
   tagline: Text
   /** Short statement on the home page, under the hero. */

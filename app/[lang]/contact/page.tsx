@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import type { CSSProperties } from "react"
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
+import { Rise } from "@/components/motion/rise"
 import { getDict, langFrom, type LangParams } from "@/lib/i18n"
 import { ContactForm, CopyEmail } from "@/components/contact/contact-form"
 
@@ -20,8 +21,8 @@ export default async function ContactPage(props: LangParams) {
   return (
     <>
       <section className="wrap page-head">
-        <h1 className="large-title">{t.title}</h1>
-        <p className="lead mt-6">{t.lead}</p>
+        <Rise as="h1" on="load" text={t.title} className="large-title" />
+        <p className="lead enter mt-6" style={{ "--d": 2 } as CSSProperties}>{t.lead}</p>
       </section>
 
       <section className="wrap section !pt-6">

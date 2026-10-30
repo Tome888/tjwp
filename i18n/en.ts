@@ -3,7 +3,7 @@ export const en = {
   meta: {
     title: "Tome Jeftimov — Developer",
     description:
-      "Developer from North Macedonia. Web and mobile apps, APIs and back-ends: contract work, team roles and products of my own.",
+      "Developer based in N. Macedonia and Bulgaria, EU citizen. Web and mobile apps, APIs and back-ends: contract work, team roles and products of my own.",
     about: "About",
     aboutDescription: "Who I am, what I use, where I studied.",
     projects: "Work",
@@ -57,6 +57,7 @@ export const en = {
     cv: "Download CV",
     role: "Role",
     location: "Based in",
+    citizenship: "Citizenship",
   },
   projects: {
     title: "Work",

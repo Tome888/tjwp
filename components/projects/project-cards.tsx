@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react"
 import { ArrowUpRight } from "@phosphor-icons/react"
 import type { Dict } from "@/i18n/en"
 import { ProjectImage } from "@/components/project-image"
@@ -22,6 +22,7 @@ export interface CardItem {
 }
 
 type T = Dict["projects"]
+type Vars = CSSProperties & Record<`--${string}`, string | number>
 
 /** Opens one project in a sheet; keeps showing it while the sheet slides away. */
 function useProjectSheet(items: CardItem[], deepLink: boolean) {
@@ -66,7 +67,7 @@ function Shots({ items, label }: { items: NonNullable<CardItem["gallery"]>; labe
   return (
     <ul className="shots" aria-label={label}>
       {items.map((shot, i) => (
-        <li key={shot.src} className="shot">
+        <li key={shot.src} className="shot" style={{ "--i": Math.min(i, 5) } as Vars}>
           <figure>
             <Image
               src={shot.src}
@@ -152,7 +153,7 @@ export function FeaturedWork({ items, t }: { items: CardItem[]; t: T }) {
     <>
       <ul className="entries">
         {items.map((item, i) => (
-          <li key={item.slug} className="entry">
+          <li key={item.slug} className="entry" data-reveal>
             <button type="button" className="entry__btn" aria-haspopup="dialog" onClick={() => open(item)}>
               <span className="entry__media">
                 <ProjectImage
@@ -208,8 +209,8 @@ export function ProjectIndex({ items, t }: { items: CardItem[]; t: T }) {
 
       {list.length ? (
         <ul className="tiles">
-          {list.map((item) => (
-            <li key={item.slug} id={item.slug}>
+          {list.map((item, i) => (
+            <li key={item.slug} id={item.slug} className="tile" data-reveal style={{ "--d": i % 3 } as Vars}>
               <button type="button" className="tile__btn" aria-haspopup="dialog" onClick={() => open(item)}>
                 <span className="tile__media">
                   <ProjectImage

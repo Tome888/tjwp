@@ -60,7 +60,11 @@ export const site: Site = {
       mk: "Софтверски Девелопер и Дипломиран Маркетер",
     },
     headline: { en: "Software Developer", mk: "Софтверски девелопер" },
-    location: { en: "North Macedonia", mk: "Северна Македонија" },
+    location: { en: "N. Macedonia / Bulgaria", mk: "С. Македонија / Бугарија" },
+    citizenship: {
+      en: "EU citizen, with dual Macedonian and Bulgarian nationality",
+      mk: "Државјанин на ЕУ, со двојно македонско и бугарско државјанство",
+    },
     tagline: {
       en: "From first idea to launch. Web and mobile apps for clients and teams.",
       mk: "Од првата идеја до лансирање. Веб и мобилни апликации за клиенти и тимови.",

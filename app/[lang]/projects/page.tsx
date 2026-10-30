@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react"
 import type { Metadata } from "next"
+import { Rise } from "@/components/motion/rise"
 import { getDict, langFrom, type LangParams } from "@/lib/i18n"
 import { projects, toCard } from "@/lib/content"
 import { Products } from "@/components/home/sections"
@@ -18,8 +20,8 @@ export default async function ProjectsPage(props: LangParams) {
   return (
     <>
       <section className="wrap page-head">
-        <h1 className="large-title">{t.projects.title}</h1>
-        <p className="lead mt-6">{t.projects.lead}</p>
+        <Rise as="h1" on="load" text={t.projects.title} className="large-title" />
+        <p className="lead enter mt-6" style={{ "--d": 2 } as CSSProperties}>{t.projects.lead}</p>
       </section>
 
       <section className="wrap section !pt-6" aria-label={t.projects.indexLabel}>
