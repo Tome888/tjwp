@@ -161,8 +161,8 @@ export const site: Site = {
     {
       title: { en: "My own products", mk: "Мои производи" },
       text: {
-        en: "A QR ordering system for restaurants, in development. Building my own product keeps me thinking about the business, not just the code.",
-        mk: "Систем за нарачки со QR-код за ресторани, во развој. Кога градам свој производ, размислувам и за бизнисот, не само за кодот.",
+        en: "WaitLess, a QR ordering system for restaurants, in development. Building my own product keeps me thinking about the business, not just the code.",
+        mk: "WaitLess, систем за нарачки со QR-код за ресторани, во развој. Кога градам свој производ, размислувам и за бизнисот, не само за кодот.",
       },
     },
   ],
@@ -171,7 +171,7 @@ export const site: Site = {
   // Optional fields: status, link, image. Add them when you have them.
   products: [
     {
-      name: "QR Ordering",
+      name: "WaitLess",
       summary: {
         en: "A SaaS for restaurants. Guests scan a QR code at the table and order from their phone.",
         mk: "SaaS за ресторани. Гостите скенираат QR-код на масата и нарачуваат од својот телефон.",
