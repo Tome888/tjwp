@@ -1,5 +1,5 @@
 import Link from "next/link"
-import type { ReactNode } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import { ArrowUpRight, QrCode } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
 import type { Lang } from "@/content/types"
@@ -8,9 +8,11 @@ import { featuredProjects, imagePath, toCard } from "@/lib/content"
 import { ProjectImage } from "@/components/project-image"
 import { FeaturedWork } from "@/components/projects/project-cards"
 
+type Vars = CSSProperties & Record<`--${string}`, string | number>
+
 export function SectionHead({ id, title, more }: { id?: string; title: string; more?: ReactNode }) {
   return (
-    <div className="section__head">
+    <div className="section__head" data-reveal>
       <h2 id={id} className="title-2">
         {title}
       </h2>
@@ -27,7 +29,7 @@ export function Services({ lang }: { lang: Lang }) {
       <SectionHead id="services-title" title={t.servicesLabel} />
       <ul className="services">
         {site.services.map((s, i) => (
-          <li key={i} className="service">
+          <li key={i} className="service" data-reveal style={{ "--d": i } as Vars}>
             <h3 className="title-3">{s.title[lang]}</h3>
             <p>{s.text[lang]}</p>
           </li>
@@ -46,7 +48,7 @@ export function Products({ lang }: { lang: Lang }) {
       <SectionHead id="products-title" title={t.productsLabel} />
       <div className="grid gap-16">
         {site.products.map((product) => (
-          <article key={product.name} className="product">
+          <article key={product.name} className="product" data-reveal>
             <div>
               {product.status ? <p className="status">{product.status[lang]}</p> : null}
               <h3 className="product__name">{product.name}</h3>

@@ -3,6 +3,7 @@ import Image from "next/image"
 import type { CSSProperties } from "react"
 import { ArrowUpRight, DownloadSimple } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
+import { Rise } from "@/components/motion/rise"
 import { getDict, langFrom, type LangParams } from "@/lib/i18n"
 import { SectionHead } from "@/components/home/sections"
 import { CtaCard } from "@/components/cta-card"
@@ -24,7 +25,7 @@ export default async function AboutPage(props: LangParams) {
   return (
     <>
       <section className="wrap page-head">
-        <h1 className="large-title">{t.title}</h1>
+        <Rise as="h1" on="load" text={t.title} className="large-title" />
       </section>
 
       <section className="wrap pb-14 md:pb-22">
@@ -65,7 +66,7 @@ export default async function AboutPage(props: LangParams) {
 
       <section className="wrap section" aria-labelledby="skills-title">
         <SectionHead id="skills-title" title={t.skillsLabel} />
-        <dl className="skills">
+        <dl className="skills" data-reveal>
           {about.skills.map((g, i) => (
             <div key={i}>
               <dt>{g.group[lang]}</dt>
@@ -78,7 +79,7 @@ export default async function AboutPage(props: LangParams) {
 
       <section className="wrap section" aria-labelledby="edu-title">
         <SectionHead id="edu-title" title={t.educationLabel} />
-        <ol className="rows">
+        <ol className="rows" data-reveal>
           {about.education.map((e, i) => (
             <li key={i} className="row">
               <div className="row__main">
@@ -92,7 +93,7 @@ export default async function AboutPage(props: LangParams) {
 
       <section className="wrap section" aria-labelledby="links-title">
         <SectionHead id="links-title" title={t.linksLabel} />
-        <ul className="rows">
+        <ul className="rows" data-reveal>
           <li>
             <a href={about.github} target="_blank" rel="noopener noreferrer" className="row">
               <span className="row__main row__title">GitHub</span>

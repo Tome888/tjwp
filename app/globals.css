@@ -287,6 +287,11 @@
     white-space: nowrap;
     transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.15s var(--ease-out);
   }
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+  }
   .btn:active {
     transform: scale(0.97);
   }
@@ -419,7 +424,7 @@
   .nav a[aria-current="page"] {
     color: var(--ink);
   }
-  .nav a[aria-current="page"]::after {
+  .nav a::after {
     content: "";
     position: absolute;
     left: 7px;
@@ -427,6 +432,17 @@
     bottom: 2px;
     height: 2px;
     background: var(--signal);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .nav a:hover::after,
+  .nav a[aria-current="page"]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .nav a:hover:not([aria-current="page"])::after {
+    opacity: 0.35;
   }
   @media (min-width: 768px) {
     .nav {
@@ -437,7 +453,7 @@
       padding-inline: 10px;
       font-size: 16px;
     }
-    .nav a[aria-current="page"]::after {
+    .nav a::after {
       left: 10px;
       right: 10px;
     }
@@ -445,6 +461,39 @@
   .tools {
     display: flex;
     align-items: center;
+  }
+  /* Small phones (and the longer Macedonian labels): tighten the bar. */
+  @media (max-width: 389px) {
+    .wrap {
+      padding-inline: 16px;
+    }
+    .topbar__inner {
+      gap: 2px;
+    }
+    .nav a {
+      padding-inline: 5px;
+      font-size: 14px;
+    }
+    .nav a::after {
+      left: 5px;
+      right: 5px;
+    }
+    .tools .icon-btn {
+      min-width: 34px;
+    }
+    .brand__mark {
+      width: 32px;
+      height: 32px;
+    }
+  }
+  @media (max-width: 340px) {
+    .nav a {
+      padding-inline: 4px;
+      font-size: 13px;
+    }
+    .tools .icon-btn {
+      min-width: 32px;
+    }
   }
 
   /* ── Hero ───────────────────────────────────────────────────────────── */
@@ -462,7 +511,7 @@
   /* The name, heavy, and the headline under it in a hairline weight. */
   .name {
     font-family: var(--display);
-    font-size: clamp(3rem, 14.2vw, 7.75rem);
+    font-size: clamp(2.5rem, 12vw, 7.75rem);
     line-height: 0.94;
     letter-spacing: -0.04em;
     margin: 0;
@@ -588,13 +637,45 @@
     overflow: hidden;
     background: var(--plate);
   }
+  @media (hover: hover) {
+    .entry__media img,
+    .tile__media img {
+      transition: transform 0.8s var(--ease-out);
+    }
+    .entry__btn:hover .entry__media img,
+    .tile__btn:hover .tile__media img {
+      transform: scale(1.035);
+    }
+  }
+  .entry__open svg {
+    transition: transform 0.3s var(--ease-out);
+  }
+  .entry__btn:hover .entry__open svg {
+    transform: translateX(4px);
+  }
   .entry__text {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
   @media (min-width: 768px) {
-    .entry__text {
+    @media (hover: hover) {
+    .entry__media img,
+    .tile__media img {
+      transition: transform 0.8s var(--ease-out);
+    }
+    .entry__btn:hover .entry__media img,
+    .tile__btn:hover .tile__media img {
+      transform: scale(1.035);
+    }
+  }
+  .entry__open svg {
+    transition: transform 0.3s var(--ease-out);
+  }
+  .entry__btn:hover .entry__open svg {
+    transform: translateX(4px);
+  }
+  .entry__text {
       padding-top: 4px;
     }
   }
@@ -669,8 +750,18 @@
     }
   }
   .service {
-    padding-top: 20px;
-    border-top: 2px solid var(--ink);
+    position: relative;
+    padding-top: 22px;
+  }
+  .service::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ink);
+    transform-origin: left;
   }
   .service p {
     margin-top: 10px;
@@ -740,6 +831,9 @@
     font-size: clamp(2.5rem, 8vw, 5.5rem);
     line-height: 0.98;
     letter-spacing: -0.04em;
+  }
+  .cta__side {
+    min-width: 0;
   }
   .cta__text {
     margin-top: 24px;
@@ -1382,10 +1476,12 @@
 }
 
 /* ── Motion ─────────────────────────────────────────────────────────────── */
-/* One moment only: the name rises into place on load, the main script
-   first, then the other. The rest of the hero fades in after it.
-   html[data-motion] is set before first paint ("full" or "reduced");
-   without it (no JavaScript) everything is simply visible. */
+/* Everything here moves only transform, opacity or clip-path, so it runs on
+   the GPU and stays smooth. html[data-motion] is set before first paint
+   ("full" or "reduced"/Calm); without it (no JavaScript) everything is
+   simply visible. Calm keeps the fades and drops the movement. */
+
+/* On load: the name rises line by line, the photo wipes open. */
 html[data-motion="full"] .name__line > span {
   animation: rise 0.9s var(--ease-out) both;
 }
@@ -1393,15 +1489,135 @@ html[data-motion="full"] .name__line--other > span {
   animation-delay: 0.14s;
 }
 html[data-motion] .enter {
-  animation: fade 0.6s ease both;
+  animation: fade-up 0.7s var(--ease-out) both;
   animation-delay: calc(0.35s + var(--d, 0) * 80ms);
 }
-html[data-motion="reduced"] .name__line > span {
-  animation: fade 0.3s ease both;
+html[data-motion="full"] .hero__photo {
+  animation: wipe 1.1s var(--ease-out) 0.2s both;
 }
-html[data-motion="reduced"] .enter {
-  animation-duration: 0.3s;
-  animation-delay: 0s;
+html[data-motion="full"] .hero__photo img {
+  animation: settle 1.6s var(--ease-out) 0.2s both;
+}
+
+/* Titles whose words rise one after another (see components/motion/rise.tsx). */
+.rise__w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+}
+.rise__w > span {
+  display: inline-block;
+}
+html[data-motion="full"] .rise--load .rise__w > span {
+  animation: rise 0.85s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+html[data-motion="full"] .rise[data-reveal] .rise__w > span {
+  transform: translateY(105%);
+  transition: transform 0.85s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+html[data-motion="full"] .rise[data-reveal].is-in .rise__w > span {
+  transform: none;
+}
+
+/* On scroll: blocks fade up once as they come into view. */
+html[data-motion] [data-reveal]:not(.rise) {
+  transition: opacity 0.7s var(--ease-out), transform 0.8s var(--ease-out);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+html[data-motion] [data-reveal]:not(.rise):not(.is-in) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+html[data-motion="reduced"] [data-reveal]:not(.is-in) {
+  transform: none !important;
+}
+
+/* The CTA block itself stays put; its title and side text move. */
+html[data-motion] .cta[data-reveal]:not(.is-in) {
+  opacity: 1;
+  transform: none;
+}
+html[data-motion] .cta .cta__side {
+  transition: opacity 0.7s var(--ease-out) 0.35s, transform 0.8s var(--ease-out) 0.35s;
+}
+html[data-motion] .cta:not(.is-in) .cta__side {
+  opacity: 0;
+  transform: translateY(20px);
+}
+html[data-motion="full"] .cta {
+  border-top-color: transparent;
+  background: linear-gradient(var(--ink), var(--ink)) top left / 0% 2px no-repeat;
+  transition: background-size 1s var(--ease-out);
+}
+html[data-motion="full"] .cta.is-in {
+  background-size: 100% 2px;
+}
+
+/* Work rows: the row stays, the image wipes up and settles, the words follow. */
+html[data-motion] .entry[data-reveal]:not(.is-in) {
+  opacity: 1;
+  transform: none;
+}
+html[data-motion="full"] .entry .entry__media {
+  transition: clip-path 1s var(--ease-out);
+}
+html[data-motion="full"] .entry:not(.is-in) .entry__media {
+  clip-path: inset(100% 0 0 0 round 6px);
+}
+html[data-motion="full"] .entry.is-in .entry__media {
+  clip-path: inset(0 0 0 0 round 6px);
+}
+html[data-motion="full"] .entry .entry__media > * {
+  transition: scale 1.4s var(--ease-out);
+}
+html[data-motion="full"] .entry:not(.is-in) .entry__media > * {
+  scale: 1.12;
+}
+html[data-motion] .entry .entry__text {
+  transition: opacity 0.7s var(--ease-out) 0.2s, transform 0.8s var(--ease-out) 0.2s;
+}
+html[data-motion] .entry:not(.is-in) .entry__text {
+  opacity: 0;
+  transform: translateY(24px);
+}
+html[data-motion="reduced"] .entry:not(.is-in) .entry__text {
+  transform: none;
+}
+
+/* What I do: each top rule draws itself, left to right. */
+html[data-motion="full"] .service::before {
+  transition: transform 0.9s var(--ease-out);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+html[data-motion="full"] .service:not(.is-in)::before {
+  transform: scaleX(0);
+}
+
+/* Sheet: the phone screens slide in one after another, the text follows. */
+html[data-motion] dialog.sheet .shot {
+  transition: opacity 0.5s var(--ease-out), transform 0.7s var(--ease-out);
+  transition-delay: calc(0.12s + var(--i, 0) * 60ms);
+}
+html[data-motion] dialog.sheet:not([data-open]) .shot {
+  opacity: 0;
+  transform: translateX(40px);
+}
+html[data-motion="reduced"] dialog.sheet .shot {
+  transform: none !important;
+}
+html[data-motion] dialog.sheet .sheet__body {
+  transition: opacity 0.5s var(--ease-out) 0.15s, transform 0.6s var(--ease-out) 0.15s;
+}
+html[data-motion] dialog.sheet:not([data-open]) .sheet__body {
+  opacity: 0;
+  transform: translateY(16px);
+}
+html[data-motion="reduced"] dialog.sheet .sheet__body {
+  transform: none !important;
 }
 
 @keyframes rise {
@@ -1413,6 +1629,43 @@ html[data-motion="reduced"] .enter {
   from {
     opacity: 0;
   }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes wipe {
+  from {
+    clip-path: inset(100% 0 0 0 round 6px);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 6px);
+  }
+}
+@keyframes settle {
+  from {
+    transform: scale(1.15);
+  }
+}
+
+html[data-motion="reduced"] .enter {
+  animation-name: fade;
+  animation-duration: 0.3s;
+  animation-delay: 0s;
+}
+html[data-motion="reduced"] .name__line > span {
+  animation: fade 0.3s ease both;
+}
+html[data-motion="reduced"] .rise--load .rise__w > span {
+  animation: fade 0.3s ease both;
+}
+html[data-motion="reduced"] .rise[data-reveal] {
+  transition: opacity 0.4s ease;
+}
+html[data-motion="reduced"] .rise[data-reveal]:not(.is-in) {
+  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
