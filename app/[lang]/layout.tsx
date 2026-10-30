@@ -9,9 +9,9 @@ import { SiteFooter } from "@/components/site-footer"
 import { MotionRoot } from "@/components/motion/motion-root"
 import "../globals.css"
 
-// Text uses the system font on Apple devices (SF Pro) and self-hosted Inter
-// elsewhere (see globals.css). Nothing is preloaded: Apple devices never
-// download a font, others fetch Inter only when it's needed.
+// Type: Unbounded for the name and titles, Onest for text. Both are
+// self-hosted (see globals.css) and split by script, so a page only loads
+// the Latin or Cyrillic files it actually uses.
 
 // Runs before first paint: picks full or calm motion so nothing flashes.
 // A choice made with the Motion switch wins; otherwise the OS setting.
@@ -39,8 +39,8 @@ export async function generateMetadata(props: LangParams): Promise<Metadata> {
       type: "website",
       locale: lang === "mk" ? "mk_MK" : "en_US",
     },
-    // An iOS-style app icon: the TJ mark on a cobalt tile. iOS rounds the
-    // corners of the touch icon itself, so that one is a plain square.
+    // The TJ mark. iOS rounds the corners of the touch icon itself, so that
+    // one is a plain square.
     icons: {
       icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
       apple: "/apple-icon.png",
@@ -53,8 +53,8 @@ export const viewport: Viewport = {
   // env(safe-area-inset-*) to stay clear of them.
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f2f2f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+    { media: "(prefers-color-scheme: light)", color: "#f1f2ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1130" },
   ],
 }
 
@@ -78,7 +78,6 @@ export default async function RootLayout({ children, params }: LangParams & { ch
             firstName={site.profile.firstName[lang]}
             lastName={site.profile.lastName[lang]}
           />
-          {/* #page is what the liquid glass mirrors; the bars sit outside it. */}
           <div id="page">
             <main id="main">{children}</main>
             <SiteFooter lang={lang} />

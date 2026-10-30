@@ -9,10 +9,10 @@ declare global {
 }
 
 /*
- * Motion is CSS: springs on press, reveals as sections scroll in, sheets
- * that slide up. This component only does two small jobs:
- * 1. Reveals ([data-reveal]): an IntersectionObserver adds .is-in and CSS
- *    runs the transition (opacity only in Calm mode).
+ * Motion is CSS: the name rising in on load and sheets that slide up.
+ * This component only does two small jobs:
+ * 1. Reveals ([data-reveal], if any are added): an IntersectionObserver adds
+ *    .is-in so CSS can run a transition.
  * 2. Keeps html[data-motion] ("full" or "reduced"/Calm) in place. It is set
  *    before first paint by the boot script in the layout and can be changed
  *    with the Motion switch (see MotionToggle).

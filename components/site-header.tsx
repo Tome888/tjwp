@@ -3,19 +3,18 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useEffect, useLayoutEffect, useRef, useState, useTransition, type MouseEvent, type RefObject } from "react"
-import { Briefcase, EnvelopeSimple, House, Moon, Sun, User, type Icon } from "@phosphor-icons/react"
+import { useEffect, useState, useTransition, type MouseEvent } from "react"
+import { Moon, Sun } from "@phosphor-icons/react"
 import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
-import { Glass } from "@/components/glass/glass"
 
 type Nav = Dict["nav"]
 
-const links: Array<{ href: string; key: "home" | "projects" | "about" | "contact"; icon: Icon }> = [
-  { href: "/", key: "home", icon: House },
-  { href: "/projects", key: "projects", icon: Briefcase },
-  { href: "/about", key: "about", icon: User },
-  { href: "/contact", key: "contact", icon: EnvelopeSimple },
+// Home is the name on the left, so it isn't repeated here.
+const links: Array<{ href: string; key: "projects" | "about" | "contact" }> = [
+  { href: "/projects", key: "projects" },
+  { href: "/about", key: "about" },
+  { href: "/contact", key: "contact" },
 ]
 
 export function SiteHeader({
@@ -33,12 +32,10 @@ export function SiteHeader({
   // the visible one (/projects). Strip the language so both agree.
   const pathname = usePathname().replace(/^\/(en|mk)(?=\/|$)/, "") || "/"
   const name = `${firstName} ${lastName}`
+  const initials = `${Array.from(firstName)[0] ?? ""}${Array.from(lastName)[0] ?? ""}`
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`))
-  const activeIndex = links.findIndex((l) => isActive(l.href))
-  const pageTitle = activeIndex > 0 ? t[links[activeIndex].key] : name
-  const collapsed = useCollapsedTitle(pathname)
 
-  // Tapping the tab you're already on scrolls back to the top, as in iOS.
+  // Tapping the page you're already on scrolls back to the top.
   const onNav = (e: MouseEvent, href: string) => {
     if (!isActive(href)) return
     e.preventDefault()
@@ -46,129 +43,42 @@ export function SiteHeader({
     window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" })
   }
 
-  const desktop = useRef<HTMLDivElement>(null)
-  const phone = useRef<HTMLDivElement>(null)
-  const desktopBlob = useSelection(desktop, activeIndex)
-  const phoneBlob = useSelection(phone, activeIndex)
-
   return (
-    <>
-      <Glass fixed className="topbar" data-collapsed={collapsed ? "true" : "false"}>
-        <Link href="/" className="topbar__title" aria-label={`${name}, ${t.home}`} onClick={(e) => onNav(e, "/")}>
-          <span className="md:hidden">{pageTitle}</span>
+    <header className="topbar">
+      <div className="wrap topbar__inner">
+        <Link
+          href="/"
+          className="brand"
+          aria-label={`${name}, ${t.home}`}
+          aria-current={isActive("/") ? "page" : undefined}
+          onClick={(e) => onNav(e, "/")}
+        >
+          <span className="brand__mark" aria-hidden="true">
+            {initials}
+          </span>
           <span className="hidden md:inline">{name}</span>
         </Link>
 
-        <nav aria-label={t.label} className="topbar__links">
-          <div ref={desktop} className="relative flex h-full items-center">
-            <span className="glass-select" {...desktopBlob} aria-hidden="true" />
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="topbar__link"
-                aria-current={isActive(link.href) ? "page" : undefined}
-                onClick={(e) => onNav(e, link.href)}
-              >
-                {t[link.key]}
-              </Link>
-            ))}
-          </div>
+        <nav aria-label={t.label} className="nav">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive(link.href) ? "page" : undefined}
+              onClick={(e) => onNav(e, link.href)}
+            >
+              {t[link.key]}
+            </Link>
+          ))}
         </nav>
 
-        <div className="topbar__tools">
+        <div className="tools">
           <LangSwitch lang={lang} t={t} />
           <ThemeToggle t={t} />
         </div>
-      </Glass>
-
-      <Glass fixed className="tabbar">
-        <nav aria-label={t.label} ref={phone} className="relative flex h-full w-full items-center">
-          <span className="glass-select" {...phoneBlob} aria-hidden="true" />
-          {links.map((link) => {
-            const active = isActive(link.href)
-            const Icon = link.icon
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="tab"
-                aria-current={active ? "page" : undefined}
-                onClick={(e) => onNav(e, link.href)}
-              >
-                <Icon weight={active ? "fill" : "regular"} aria-hidden="true" />
-                {t[link.key]}
-              </Link>
-            )
-          })}
-        </nav>
-      </Glass>
-    </>
+      </div>
+    </header>
   )
-}
-
-/**
- * Places the glass selection blob under the active item and lets it spring
- * (with a quick liquid stretch) when the active item changes.
- */
-function useSelection(container: RefObject<HTMLElement | null>, index: number) {
-  const [box, setBox] = useState<{ left: number; width: number } | null>(null)
-  const [stretch, setStretch] = useState(false)
-  const previous = useRef(index)
-
-  useLayoutEffect(() => {
-    const el = container.current
-    if (!el) return
-    const update = () => {
-      const target = el.querySelectorAll<HTMLElement>("a")[index]
-      setBox(target && target.offsetWidth ? { left: target.offsetLeft, width: target.offsetWidth } : null)
-    }
-    update()
-    const ro = new ResizeObserver(update)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [container, index])
-
-  useEffect(() => {
-    if (previous.current === index) return
-    previous.current = index
-    if (index < 0) return
-    setStretch(true)
-    const id = setTimeout(() => setStretch(false), 320)
-    return () => clearTimeout(id)
-  }, [index])
-
-  return {
-    style: box ? { left: box.left, width: box.width } : undefined,
-    "data-ready": box ? "" : undefined,
-    "data-stretch": stretch ? "" : undefined,
-  }
-}
-
-/**
- * On phones the top bar shows the page title once the big title on the page
- * has scrolled away, like an iOS navigation bar.
- */
-function useCollapsedTitle(pathname: string) {
-  const [collapsed, setCollapsed] = useState(false)
-  useEffect(() => {
-    setCollapsed(false)
-    let io: IntersectionObserver | null = null
-    const id = requestAnimationFrame(() => {
-      const title = document.querySelector("#page [data-large-title]")
-      if (!title) return
-      io = new IntersectionObserver(
-        ([entry]) => setCollapsed(!entry.isIntersecting && entry.boundingClientRect.top < 80),
-        { rootMargin: "-70px 0px 0px 0px" },
-      )
-      io.observe(title)
-    })
-    return () => {
-      cancelAnimationFrame(id)
-      io?.disconnect()
-    }
-  }, [pathname])
-  return collapsed
 }
 
 function LangSwitch({ lang, t }: { lang: Lang; t: Nav }) {
@@ -219,7 +129,7 @@ function ThemeToggle({ t }: { t: Nav }) {
   return (
     <button
       type="button"
-      className="icon-btn text-[21px]"
+      className="icon-btn"
       aria-label={dark ? t.themeToLight : t.themeToDark}
       title={dark ? t.themeToLight : t.themeToDark}
       onClick={() => setTheme(dark ? "light" : "dark")}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import type { CSSProperties } from "react"
-import { ArrowUpRight, CalendarCheck, GithubLogo, LinkedinLogo, LinkSimple } from "@phosphor-icons/react/dist/ssr"
+import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
 import { getDict, langFrom, type LangParams } from "@/lib/i18n"
 import { ContactForm, CopyEmail } from "@/components/contact/contact-form"
@@ -12,12 +12,6 @@ export async function generateMetadata(props: LangParams): Promise<Metadata> {
   return { title: t.contact, description: t.contactDescription }
 }
 
-function linkLook(label: string) {
-  if (/github/i.test(label)) return { Icon: GithubLogo, color: "#24292f" }
-  if (/linkedin/i.test(label)) return { Icon: LinkedinLogo, color: "#0a66c2" }
-  return { Icon: LinkSimple, color: "var(--gray)" }
-}
-
 export default async function ContactPage(props: LangParams) {
   const lang = await langFrom(props)
   const t = getDict(lang).contact
@@ -26,18 +20,14 @@ export default async function ContactPage(props: LangParams) {
   return (
     <>
       <section className="wrap page-head">
-        <h1 className="large-title enter" data-large-title>
-          {t.title}
-        </h1>
-        <p className="lead enter mt-3" style={{ "--d": 1 } as Vars}>
-          {t.lead}
-        </p>
+        <h1 className="large-title">{t.title}</h1>
+        <p className="lead mt-6">{t.lead}</p>
       </section>
 
-      <section className="wrap section">
+      <section className="wrap section !pt-6">
         <div className="contact-grid">
-          <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
-            <div className="card email-card enter" style={{ "--d": 2 } as Vars}>
+          <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-10">
+            <div className="enter">
               <p className="footnote">{t.emailLabel}</p>
               <a href={`mailto:${contact.email}`} className="email-card__address">
                 {contact.email}
@@ -45,35 +35,28 @@ export default async function ContactPage(props: LangParams) {
               <CopyEmail email={contact.email} t={t} />
             </div>
 
-            <div className="enter" style={{ "--d": 3 } as Vars}>
+            <div className="enter" style={{ "--d": 1 } as Vars}>
               <p className="footnote form-group-label">{t.elsewhere}</p>
-              <ul className="list">
-                {contact.links.map((l) => {
-                  const { Icon, color } = linkLook(l.label)
-                  return (
-                    <li key={l.url}>
-                      <a href={l.url} target="_blank" rel="noopener noreferrer" className="list__row">
-                        <span className="icon-tile icon-tile--sm" style={{ background: color }} aria-hidden="true">
-                          <Icon weight="fill" />
-                        </span>
-                        <span className="list__main list__title">{l.label}</span>
-                        <ArrowUpRight className="list__trail" weight="bold" aria-hidden="true" />
-                      </a>
-                    </li>
-                  )
-                })}
+              <ul className="rows">
+                {contact.links.map((l) => (
+                  <li key={l.url}>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer" className="row">
+                      <span className="row__main row__title">{l.label}</span>
+                      <ArrowUpRight className="row__trail" weight="bold" aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
 
             {profile.available ? (
-              <p className="availability enter justify-self-start" style={{ "--d": 4 } as Vars}>
-                <CalendarCheck weight="bold" aria-hidden="true" />
-                {profile.availability[lang]}
+              <p className="status enter" style={{ "--d": 2 } as Vars}>
+                {profile.availability[lang]}.
               </p>
             ) : null}
           </div>
 
-          <div className="enter min-w-0" style={{ "--d": 3 } as Vars}>
+          <div className="enter min-w-0" style={{ "--d": 1 } as Vars}>
             <ContactForm t={t} />
           </div>
         </div>

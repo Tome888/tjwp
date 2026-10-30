@@ -1,6 +1,6 @@
 import { langFrom, type LangParams } from "@/lib/i18n"
 import { Hero } from "@/components/home/hero"
-import { Products, Services, Statement, Work } from "@/components/home/sections"
+import { Products, Services, Work } from "@/components/home/sections"
 import { CtaCard } from "@/components/cta-card"
 
 export default async function Home(props: LangParams) {
@@ -8,7 +8,6 @@ export default async function Home(props: LangParams) {
   return (
     <>
       <Hero lang={lang} />
-      <Statement lang={lang} />
       <Work lang={lang} />
       <Services lang={lang} />
       <Products lang={lang} />

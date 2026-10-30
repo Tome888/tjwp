@@ -6,10 +6,9 @@ import type { Dict } from "@/i18n/en"
 type Mode = "full" | "reduced"
 
 /**
- * Motion: Full / Calm, as an iOS segmented control. Calm turns springs into
- * quick fades and the liquid glass into plain frosted glass. The choice is
- * remembered on this device; by default it follows the OS "reduce motion"
- * setting. The sliding thumb is driven by CSS from html[data-motion], so it
+ * Motion: Full / Calm. Calm turns the movement into quick fades. The choice
+ * is remembered on this device; by default it follows the OS "reduce motion"
+ * setting. The selected side is drawn by CSS from html[data-motion], so it
  * is right from the first paint.
  */
 export function MotionToggle({ t }: { t: Dict["nav"] }) {

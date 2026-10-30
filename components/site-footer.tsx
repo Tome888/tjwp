@@ -20,8 +20,8 @@ export function SiteFooter({ lang }: { lang: Lang }) {
     <footer className="wrap footer">
       <div className="footer__grid">
         <div>
-          <p className="title-3">{name}</p>
-          <p className="callout mt-1">{profile.role[lang]}</p>
+          <p className="footer__name">{name}</p>
+          <p className="footnote mt-1">{profile.role[lang]}</p>
           <a href={`mailto:${contact.email}`} className="more-link mt-4 break-all">
             {contact.email}
           </a>

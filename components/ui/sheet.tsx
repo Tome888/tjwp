@@ -5,14 +5,10 @@ import { createPortal } from "react-dom"
 import { X } from "@phosphor-icons/react"
 
 /**
- * An iOS-style sheet on a native <dialog>. On phones it springs up from the
- * bottom while the page behind it shrinks back, and can be swiped down to
- * close (from the top handle or the image). On wider screens it opens as a
- * centered card. Esc, the close button and a tap outside also close it.
- *
- * It's rendered into <body>, outside #page: #page shrinks back while a sheet
- * is open, and Safari would place the sheet relative to that shrunken page
- * (off screen) instead of the screen.
+ * A sheet on a native <dialog>. On phones it slides up from the bottom and
+ * can be swiped down to close (from the top handle or the image). On wider
+ * screens it opens as a centered panel. Esc, the close button and a tap
+ * outside also close it. Rendered into <body>, outside #page.
  */
 export function Sheet({
   open,
@@ -20,6 +16,7 @@ export function Sheet({
   labelledBy,
   closeLabel,
   media,
+  top,
   children,
 }: {
   open: boolean
@@ -28,6 +25,8 @@ export function Sheet({
   closeLabel: string
   /** Shown at the top; dragging it also moves the sheet. */
   media?: ReactNode
+  /** Shown at the top without the drag, e.g. a strip that scrolls sideways. */
+  top?: ReactNode
   children: ReactNode
 }) {
   const dialog = useRef<HTMLDialogElement>(null)
@@ -65,7 +64,6 @@ export function Sheet({
         closing.current = 0
       }
       const root = document.documentElement
-      root.style.setProperty("--sheet-origin", `${window.scrollY + window.innerHeight * 0.4}px`)
       d.style.removeProperty("--drag")
       d.showModal()
       root.classList.add("sheet-open")
@@ -126,7 +124,6 @@ export function Sheet({
     <dialog
       ref={dialog}
       className="sheet"
-      data-liquid-ignore=""
       aria-labelledby={labelledBy}
       onCancel={(e) => {
         e.preventDefault()
@@ -148,6 +145,7 @@ export function Sheet({
             {media}
           </div>
         ) : null}
+        {top}
         {children}
       </div>
     </dialog>,
