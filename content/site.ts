@@ -62,8 +62,8 @@ export const site: Site = {
     headline: { en: "Software Developer", mk: "Софтверски девелопер" },
     location: { en: "North Macedonia", mk: "Северна Македонија" },
     tagline: {
-      en: "From first idea to launch. Web and mobile, for clients and for myself.",
-      mk: "Од првата идеја до лансирање. Веб и мобилно, за клиенти и за себе.",
+      en: "From first idea to launch. Web and mobile apps for clients and teams.",
+      mk: "Од првата идеја до лансирање. Веб и мобилни апликации за клиенти и тимови.",
     },
     intro: {
       en: "I build web and mobile apps, APIs and back-ends. I've shipped work for clients, worked inside product teams, and I build products of my own. TypeScript is home base, but I pick up whatever a project needs.",
