@@ -16,6 +16,8 @@ export interface Profile {
   /** Image file in /public, e.g. "profile.png" */
   photo: string
   role: Text
+  /** The big line under your name on the home page, e.g. "Software Developer". */
+  headline: Text
   location: Text
   /** One line under the name on the home page. */
   tagline: Text

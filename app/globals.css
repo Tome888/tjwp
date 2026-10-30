@@ -367,25 +367,39 @@
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
     margin-right: auto;
+  }
+  .brand__mark {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    width: 36px;
+    height: 36px;
+  }
+  /* The name sits in a clip that starts at the logo's edge, so sliding it
+     left makes it disappear behind the logo. */
+  .brand__clip {
+    overflow: hidden;
+    padding: 4px 4px 4px 12px;
+  }
+  .brand__name {
+    display: block;
     font-family: var(--display);
     font-weight: 700;
     font-size: 15px;
     letter-spacing: -0.02em;
     white-space: nowrap;
+    transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s cubic-bezier(0.65, 0, 0.35, 1);
   }
-  .brand__mark {
-    display: inline-grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    background: var(--ink);
-    color: var(--paper);
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: -0.04em;
+  .topbar[data-scrolled] .brand__name {
+    transform: translateX(calc(-100% - 16px));
+    opacity: 0;
+  }
+  html[data-motion="reduced"] .brand__name {
+    transition: opacity 0.25s ease;
+  }
+  html[data-motion="reduced"] .topbar[data-scrolled] .brand__name {
+    transform: none;
   }
   .nav {
     display: flex;
@@ -445,8 +459,7 @@
     }
   }
 
-  /* The name, in both scripts. The page language goes first and heavy;
-     the other script follows in a hairline weight at the same size. */
+  /* The name, heavy, and the headline under it in a hairline weight. */
   .name {
     font-family: var(--display);
     font-size: clamp(3rem, 14.2vw, 7.75rem);
@@ -456,7 +469,7 @@
   }
   @media (min-width: 900px) {
     .name {
-      font-size: min(9.1vw, 7.75rem);
+      font-size: min(8.4vw, 7.25rem);
     }
   }
   .name__line {
@@ -471,7 +484,11 @@
     font-weight: 800;
   }
   .name__line--other {
+    margin-top: 0.08em;
+    font-size: 0.56em;
+    line-height: 1.02;
     font-weight: 200;
+    letter-spacing: -0.03em;
     color: var(--ink-2);
   }
 
@@ -494,7 +511,7 @@
     line-height: 1.3;
     font-weight: 500;
     letter-spacing: -0.015em;
-    max-width: 20em;
+    max-width: 22em;
   }
   @media (min-width: 768px) {
     .hero__lead {

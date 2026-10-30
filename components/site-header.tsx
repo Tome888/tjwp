@@ -7,6 +7,7 @@ import { useEffect, useState, useTransition, type MouseEvent } from "react"
 import { Moon, Sun } from "@phosphor-icons/react"
 import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
+import { Logo } from "@/components/logo"
 
 type Nav = Dict["nav"]
 
@@ -32,7 +33,7 @@ export function SiteHeader({
   // the visible one (/projects). Strip the language so both agree.
   const pathname = usePathname().replace(/^\/(en|mk)(?=\/|$)/, "") || "/"
   const name = `${firstName} ${lastName}`
-  const initials = `${Array.from(firstName)[0] ?? ""}${Array.from(lastName)[0] ?? ""}`
+  const scrolled = useScrolled()
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`))
 
   // Tapping the page you're already on scrolls back to the top.
@@ -44,7 +45,7 @@ export function SiteHeader({
   }
 
   return (
-    <header className="topbar">
+    <header className="topbar" data-scrolled={scrolled ? "" : undefined}>
       <div className="wrap topbar__inner">
         <Link
           href="/"
@@ -53,10 +54,11 @@ export function SiteHeader({
           aria-current={isActive("/") ? "page" : undefined}
           onClick={(e) => onNav(e, "/")}
         >
-          <span className="brand__mark" aria-hidden="true">
-            {initials}
+          <Logo className="brand__mark" />
+          {/* Slides in behind the logo once the page is scrolled. */}
+          <span className="brand__clip hidden md:block" aria-hidden="true">
+            <span className="brand__name">{name}</span>
           </span>
-          <span className="hidden md:inline">{name}</span>
         </Link>
 
         <nav aria-label={t.label} className="nav">
@@ -79,6 +81,18 @@ export function SiteHeader({
       </div>
     </header>
   )
+}
+
+/** True once the page has scrolled away from the very top. */
+function useScrolled() {
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 24)
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    return () => window.removeEventListener("scroll", update)
+  }, [])
+  return scrolled
 }
 
 function LangSwitch({ lang, t }: { lang: Lang; t: Nav }) {

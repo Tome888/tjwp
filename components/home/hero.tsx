@@ -13,16 +13,11 @@ export function leadSentence(text: string) {
   return at === -1 ? [text, ""] : [text.slice(0, at + 1), text.slice(at + 2)]
 }
 
-/**
- * The name in both scripts: the page's language first and heavy, the other
- * one under it in a hairline weight. Switching language swaps them.
- */
+/** The name, heavy, with the headline under it in a hairline weight. */
 export function Hero({ lang }: { lang: Lang }) {
   const t = getDict(lang).home
   const p = site.profile
-  const other: Lang = lang === "en" ? "mk" : "en"
   const main = `${p.firstName[lang]} ${p.lastName[lang]}`
-  const alt = `${p.firstName[other]} ${p.lastName[other]}`
   const [, rest] = leadSentence(p.intro[lang])
 
   return (
@@ -31,8 +26,8 @@ export function Hero({ lang }: { lang: Lang }) {
         <span className="name__line name__line--main">
           <span>{main}</span>
         </span>
-        <span className="name__line name__line--other" lang={other}>
-          <span>{alt}</span>
+        <span className="name__line name__line--other">
+          <span>{p.headline[lang]}</span>
         </span>
       </h1>
 

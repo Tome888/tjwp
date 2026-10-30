@@ -59,10 +59,11 @@ export const site: Site = {
       en: "Full-Stack Developer & Marketing Graduate",
       mk: "Софтверски Девелопер и Дипломиран Маркетер",
     },
+    headline: { en: "Software Developer", mk: "Софтверски девелопер" },
     location: { en: "North Macedonia", mk: "Северна Македонија" },
     tagline: {
-      en: "I build web and mobile apps. For clients, for teams, and for myself.",
-      mk: "Градам веб и мобилни апликации. За клиенти, за тимови и за себе.",
+      en: "Clinic software used around the world. A carpooling app for North Macedonia. The official site of a municipality. I've worked on all three.",
+      mk: "Софтвер за клиники ширум светот. Апликација за заеднички превоз низ Македонија. Официјалната страница на една општина. Работев на сите три.",
     },
     intro: {
       en: "I build web and mobile apps, APIs and back-ends. I've shipped work for clients, worked inside product teams, and I build products of my own. TypeScript is home base, but I pick up whatever a project needs.",
