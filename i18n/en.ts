@@ -66,6 +66,8 @@ export const en = {
     filterLabel: "Filter by tag",
     all: "All",
     open: "Read more",
+    openScreens: "See the app screens",
+    screens: "App screens",
     close: "Close",
     visit: "Visit site",
     similar: "Need something similar? Let's talk",

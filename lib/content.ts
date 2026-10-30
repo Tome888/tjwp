@@ -43,5 +43,6 @@ export function toCard(p: ProjectEntry, lang: Lang) {
     status: p.status?.[lang],
     link: p.link,
     image: imagePath(p.image),
+    gallery: p.gallery?.map((g) => ({ src: imagePath(g.image)!, caption: g.caption[lang] })),
   }
 }

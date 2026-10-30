@@ -16,6 +16,8 @@ export interface Profile {
   /** Image file in /public, e.g. "profile.png" */
   photo: string
   role: Text
+  /** The big line under your name on the home page, e.g. "Software Developer". */
+  headline: Text
   location: Text
   /** One line under the name on the home page. */
   tagline: Text
@@ -78,8 +80,20 @@ export interface Project {
   link?: string
   /** Image file in /public/projects/, e.g. "pabau.png". Optional. */
   image?: string
+  /**
+   * More screens, shown as a swipeable strip when the project is opened.
+   * Files in /public/projects/. Tall phone screenshots work best. Optional.
+   */
+  gallery?: GalleryShot[]
   /** Show as a big card on the home page (the first 6 featured are used). */
   featured?: boolean
+}
+
+export interface GalleryShot {
+  /** Image file in /public/projects/, e.g. "my-app/screen-01.webp" */
+  image: string
+  /** What the screen shows. Also read out by screen readers. */
+  caption: Text
 }
 
 export interface ContactLink {

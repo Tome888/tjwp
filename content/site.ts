@@ -22,6 +22,8 @@
  *       - no `link`  → the "Visit" button is hidden
  *       - `featured: true` → also shown as a big card on the home page
  *         (the first 6 featured projects are used)
+ *       - `gallery` → extra screens, shown as a swipeable strip when the
+ *         project is opened. See the NajdiPrevoz entry for the format.
  *  4. Commit. Vercel rebuilds and publishes it in about a minute.
  *
  *  EXAMPLE PROJECT (copy everything between the braces, including the comma):
@@ -57,10 +59,11 @@ export const site: Site = {
       en: "Full-Stack Developer & Marketing Graduate",
       mk: "Софтверски Девелопер и Дипломиран Маркетер",
     },
+    headline: { en: "Software Developer", mk: "Софтверски девелопер" },
     location: { en: "North Macedonia", mk: "Северна Македонија" },
     tagline: {
-      en: "I build web and mobile apps. For clients, for teams, and for myself.",
-      mk: "Градам веб и мобилни апликации. За клиенти, за тимови и за себе.",
+      en: "From first idea to launch. Web and mobile apps for clients and teams.",
+      mk: "Од првата идеја до лансирање. Веб и мобилни апликации за клиенти и тимови.",
     },
     intro: {
       en: "I build web and mobile apps, APIs and back-ends. I've shipped work for clients, worked inside product teams, and I build products of my own. TypeScript is home base, but I pick up whatever a project needs.",
@@ -158,8 +161,8 @@ export const site: Site = {
     {
       title: { en: "My own products", mk: "Мои производи" },
       text: {
-        en: "A QR ordering system for restaurants, in development. Building my own product keeps me thinking about the business, not just the code.",
-        mk: "Систем за нарачки со QR-код за ресторани, во развој. Кога градам свој производ, размислувам и за бизнисот, не само за кодот.",
+        en: "WaitLess, a QR ordering system for restaurants, in development. Building my own product keeps me thinking about the business, not just the code.",
+        mk: "WaitLess, систем за нарачки со QR-код за ресторани, во развој. Кога градам свој производ, размислувам и за бизнисот, не само за кодот.",
       },
     },
   ],
@@ -168,7 +171,7 @@ export const site: Site = {
   // Optional fields: status, link, image. Add them when you have them.
   products: [
     {
-      name: "QR Ordering",
+      name: "WaitLess",
       summary: {
         en: "A SaaS for restaurants. Guests scan a QR code at the table and order from their phone.",
         mk: "SaaS за ресторани. Гостите скенираат QR-код на масата и нарачуваат од својот телефон.",
@@ -204,12 +207,47 @@ export const site: Site = {
         mk: "Апликација за заеднички превоз низ Македонија, за iOS и Android.",
       },
       details: {
-        en: "A carpooling app built for a client. Drivers offer their empty seats, passengers find a ride. It's a mobile app for iOS and Android, built with Expo, with an Express back-end.",
-        mk: "Апликација за заеднички превоз изработена за клиент. Возачите ги нудат слободните места, патниците наоѓаат превоз. Мобилна апликација за iOS и Android, изработена со Expo, со бекенд на Express.",
+        en: "A carpooling app built for a client. Drivers and carriers post their routes and free seats, passengers search by route or by carrier and contact them directly. Carriers buy tokens in the app to promote their listings and profiles. Built with Expo for iOS and Android, with an Express back-end.",
+        mk: "Апликација за заеднички превоз изработена за клиент. Возачите и превозниците ги објавуваат рутите и слободните места, а патниците пребаруваат по релација или по превозник и ги контактираат директно. Превозниците купуваат токени во апликацијата за да ги промовираат огласите и профилите. Изработена со Expo за iOS и Android, со бекенд на Express.",
       },
       tags: ["expo", "reactNative", "expressJS", "mobile"],
       role: { en: "Client project · iOS & Android", mk: "Проект за клиент · iOS и Android" },
-      status: { en: "In development", mk: "Во развој" },
+      status: { en: "In closed testing", mk: "Во затворено тестирање" },
+      image: "najdiprevoz.webp",
+      gallery: [
+        {
+          image: "najdiprevoz/screen-01.webp",
+          caption: { en: "Sign in, or continue without an account", mk: "Најава или продолжување без профил" },
+        },
+        {
+          image: "najdiprevoz/screen-02.webp",
+          caption: { en: "Search by route or by carrier", mk: "Пребарување по релација или по превозник" },
+        },
+        {
+          image: "najdiprevoz/screen-03.webp",
+          caption: { en: "Results, with sponsored listings on top", mk: "Резултати, со спонзорирани огласи на врвот" },
+        },
+        {
+          image: "najdiprevoz/screen-04.webp",
+          caption: { en: "A route: times, seats, price, contact", mk: "Рута: време, места, цена, контакт" },
+        },
+        {
+          image: "najdiprevoz/screen-05.webp",
+          caption: { en: "A carrier's profile", mk: "Профил на превозник" },
+        },
+        {
+          image: "najdiprevoz/screen-06.webp",
+          caption: { en: "Carriers, with Gold and Silver plans", mk: "Превозници, со Gold и Silver пакети" },
+        },
+        {
+          image: "najdiprevoz/screen-07.webp",
+          caption: { en: "Posting a listing, step 3 of 6", mk: "Објавување оглас, чекор 3 од 6" },
+        },
+        {
+          image: "najdiprevoz/screen-08.webp",
+          caption: { en: "Carrier account: tokens, listings, promotion", mk: "Профил на превозник: токени, огласи, промоција" },
+        },
+      ],
       featured: true,
     },
     {

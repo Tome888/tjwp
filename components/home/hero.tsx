@@ -1,11 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { CSSProperties } from "react"
-import { ArrowDown, ArrowRight, CalendarCheck } from "@phosphor-icons/react/dist/ssr"
 import { site } from "@/content/site"
 import type { Lang } from "@/content/types"
 import { getDict } from "@/lib/i18n"
-import { Glass } from "@/components/glass/glass"
 
 type Vars = CSSProperties & Record<`--${string}`, string | number>
 
@@ -15,57 +13,60 @@ export function leadSentence(text: string) {
   return at === -1 ? [text, ""] : [text.slice(0, at + 1), text.slice(at + 2)]
 }
 
+/** The name, heavy, with the headline under it in a hairline weight. */
 export function Hero({ lang }: { lang: Lang }) {
   const t = getDict(lang).home
   const p = site.profile
-  const first = p.firstName[lang]
-  const last = p.lastName[lang]
-  const [lead, rest] = leadSentence(p.tagline[lang])
+  const main = `${p.firstName[lang]} ${p.lastName[lang]}`
+  const [, rest] = leadSentence(p.intro[lang])
 
   return (
-    <section className="wrap page-head" aria-labelledby="hero-name">
-      <div className="hero">
+    <section className="wrap hero" aria-labelledby="hero-name">
+      <h1 id="hero-name" className="name">
+        <span className="name__line name__line--main">
+          <span>{main}</span>
+        </span>
+        <span className="name__line name__line--other">
+          <span>{p.headline[lang]}</span>
+        </span>
+      </h1>
+
+      <div className="hero__grid">
         <div>
-          {p.available ? (
-            <p className="availability enter">
-              <CalendarCheck weight="bold" aria-hidden="true" />
-              {p.availability[lang]}
+          <p className="hero__lead enter">{p.tagline[lang]}</p>
+          {rest ? (
+            <p className="hero__body enter" style={{ "--d": 1 } as Vars}>
+              {rest}
             </p>
           ) : null}
-          <p className="eyebrow enter mt-5" style={{ "--d": 1 } as Vars}>
-            {p.role[lang]} · {p.location[lang]}
+          <p className="hero__meta enter" style={{ "--d": 2 } as Vars}>
+            {p.role[lang]}, {p.location[lang]}.
+            {p.available ? (
+              <>
+                {" "}
+                <strong>{p.availability[lang]}.</strong>
+              </>
+            ) : null}
           </p>
-          <h1 id="hero-name" className="hero__name enter" data-large-title style={{ "--d": 2 } as Vars}>
-            {first}
-            <br />
-            {last}
-          </h1>
-          <p className="hero__tagline enter" style={{ "--d": 3 } as Vars}>
-            <strong>{lead}</strong> {rest}
-          </p>
-          <div className="hero__actions enter" style={{ "--d": 4 } as Vars}>
-            <a href="#work" className="btn btn--tinted">
+          <div className="hero__actions enter" style={{ "--d": 3 } as Vars}>
+            <a href="#work" className="btn btn--ink">
               {t.seeWork}
-              <ArrowDown weight="bold" aria-hidden="true" />
             </a>
+            <Link href="/contact" className="more-link">
+              {t.start}
+            </Link>
           </div>
         </div>
 
-        <div className="hero__card enter" style={{ "--d": 3 } as Vars}>
+        <div className="hero__photo enter" style={{ "--d": 1 } as Vars}>
           <Image
             src={`/${p.photo}`}
-            alt={`${first} ${last}`}
+            alt={main}
             fill
             priority
-            sizes="(min-width: 900px) 46vw, 100vw"
-            className="object-cover object-[50%_28%]"
+            sizes="(min-width: 900px) 420px, 62vw"
+            className="object-cover object-[50%_20%]"
           />
-          <Glass className="hero__cta" snapshot=".hero__card">
-            <Link href="/contact">
-              {t.start}
-              <ArrowRight weight="bold" aria-hidden="true" />
-            </Link>
-          </Glass>
         </div>
       </div>
     </section>
