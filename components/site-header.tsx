@@ -3,16 +3,17 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { useEffect, useState, useTransition, type MouseEvent } from "react"
+import { useEffect, useState, useTransition, type CSSProperties, type MouseEvent } from "react"
 import { Moon, Sun } from "@phosphor-icons/react"
 import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
 import { Logo } from "@/components/logo"
 
 type Nav = Dict["nav"]
+type Vars = CSSProperties & Record<`--${string}`, string | number>
 
-// Home is the name on the left, so it isn't repeated here.
-const links: Array<{ href: string; key: "projects" | "about" | "contact" }> = [
+const links: Array<{ href: string; key: "home" | "projects" | "about" | "contact" }> = [
+  { href: "/", key: "home" },
   { href: "/projects", key: "projects" },
   { href: "/about", key: "about" },
   { href: "/contact", key: "contact" },
@@ -34,10 +35,30 @@ export function SiteHeader({
   const pathname = usePathname().replace(/^\/(en|mk)(?=\/|$)/, "") || "/"
   const name = `${firstName} ${lastName}`
   const scrolled = useScrolled()
+  const [menu, setMenu] = useState(false)
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`))
+
+  // Close the phone menu on navigation, on Esc, and when the screen gets wide.
+  useEffect(() => setMenu(false), [pathname])
+  useEffect(() => {
+    if (!menu) return
+    const root = document.documentElement
+    root.classList.add("menu-open")
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false)
+    const wide = matchMedia("(min-width: 720px)")
+    const onWide = () => wide.matches && setMenu(false)
+    window.addEventListener("keydown", onKey)
+    wide.addEventListener("change", onWide)
+    return () => {
+      root.classList.remove("menu-open")
+      window.removeEventListener("keydown", onKey)
+      wide.removeEventListener("change", onWide)
+    }
+  }, [menu])
 
   // Tapping the page you're already on scrolls back to the top.
   const onNav = (e: MouseEvent, href: string) => {
+    setMenu(false)
     if (!isActive(href)) return
     e.preventDefault()
     const calm = document.documentElement.dataset.motion === "reduced"
@@ -45,18 +66,13 @@ export function SiteHeader({
   }
 
   return (
-    <header className="topbar" data-scrolled={scrolled ? "" : undefined}>
+    <>
+    <header className="topbar" data-scrolled={scrolled && !menu ? "" : undefined} data-menu={menu ? "" : undefined}>
       <div className="wrap topbar__inner">
-        <Link
-          href="/"
-          className="brand"
-          aria-label={`${name}, ${t.home}`}
-          aria-current={isActive("/") ? "page" : undefined}
-          onClick={(e) => onNav(e, "/")}
-        >
+        <Link href="/" className="brand" aria-label={`${name}, ${t.home}`} onClick={(e) => onNav(e, "/")}>
           <Logo className="brand__mark" />
           {/* Slides in behind the logo once the page is scrolled. */}
-          <span className="brand__clip hidden md:block" aria-hidden="true">
+          <span className="brand__clip" aria-hidden="true">
             <span className="brand__name">{name}</span>
           </span>
         </Link>
@@ -77,9 +93,40 @@ export function SiteHeader({
         <div className="tools">
           <LangSwitch lang={lang} t={t} />
           <ThemeToggle t={t} />
+          <button
+            type="button"
+            className="icon-btn menu-btn"
+            aria-expanded={menu}
+            aria-controls="phone-menu"
+            aria-label={menu ? t.close : t.menu}
+            onClick={() => setMenu((m) => !m)}
+          >
+            <span className="menu-btn__lines" aria-hidden="true">
+              <span />
+              <span />
+            </span>
+          </button>
         </div>
       </div>
     </header>
+
+    {/* Outside the header: its backdrop blur would trap a fixed child. */}
+    <nav id="phone-menu" aria-label={t.label} className="phone-menu" data-open={menu ? "" : undefined} inert={!menu}>
+        <ul>
+          {links.map((link, i) => (
+            <li key={link.href} style={{ "--i": i } as Vars}>
+              <Link
+                href={link.href}
+                aria-current={isActive(link.href) ? "page" : undefined}
+                onClick={(e) => onNav(e, link.href)}
+              >
+                {t[link.key]}
+              </Link>
+            </li>
+          ))}
+        </ul>
+    </nav>
+    </>
   )
 }
 

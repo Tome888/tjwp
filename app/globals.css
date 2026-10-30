@@ -63,6 +63,8 @@
   --paper: #f1f2ee;
   --surface: #ffffff;
   --plate: #dfe2e8;
+  --shade: #e5e9f1;
+  --deep: #0e1b4d;
   --ink: #0e1b4d;
   --ink-2: #4c5675;
   --line: #cdd1da;
@@ -84,6 +86,8 @@
   --paper: #0a1130;
   --surface: #121b42;
   --plate: #18224d;
+  --shade: #0e1739;
+  --deep: #1a2a7a;
   --ink: #eceef5;
   --ink-2: #a2aac6;
   --line: #283260;
@@ -162,7 +166,88 @@
   }
 
   #page {
+    position: relative;
+    z-index: 1;
     min-height: 100dvh;
+  }
+
+  /* ── Bands: full-width sections with their own shade ─────────────────── */
+  .band {
+    position: relative;
+  }
+  .band--shade {
+    background: var(--shade);
+  }
+  /* Deep: an inverted section. Re-pointing the tokens recolors everything
+     inside it (text, lines, buttons, image plates) with no extra rules. */
+  .band--deep {
+    --ink: #f1f2ee;
+    --ink-2: rgba(241, 242, 238, 0.72);
+    --line: rgba(241, 242, 238, 0.2);
+    --plate: rgba(255, 255, 255, 0.08);
+    --paper: var(--deep);
+    --signal: #a9b6ff;
+    --on-signal: #0e1b4d;
+    background: var(--deep);
+    color: var(--ink);
+  }
+  .band--deep ::selection {
+    background: rgba(169, 182, 255, 0.35);
+  }
+
+  /* ── Background ─────────────────────────────────────────────────────── */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .backdrop__dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1px, transparent 1.5px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 0%, transparent 75%);
+  }
+  .backdrop__glow {
+    position: absolute;
+    width: 70vmax;
+    height: 70vmax;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .backdrop__glow--a {
+    top: -35vmax;
+    left: -20vmax;
+    background: radial-gradient(circle, color-mix(in srgb, var(--signal) 13%, transparent) 0%, transparent 62%);
+  }
+  .backdrop__glow--b {
+    top: 30vh;
+    right: -35vmax;
+    background: radial-gradient(circle, color-mix(in srgb, #7b5cff 9%, transparent) 0%, transparent 62%);
+  }
+  .dark .backdrop__glow--a {
+    background: radial-gradient(circle, color-mix(in srgb, var(--signal) 16%, transparent) 0%, transparent 62%);
+  }
+  .backdrop__spot {
+    position: absolute;
+    top: -260px;
+    left: -260px;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--signal) 9%, transparent) 0%, transparent 65%);
+    opacity: 0;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+    will-change: transform;
+  }
+  .backdrop__spot[data-on] {
+    opacity: 1;
+  }
+  html[data-motion="reduced"] .backdrop__spot {
+    display: none;
   }
 
   .page-head {
@@ -407,16 +492,22 @@
     transform: none;
   }
   .nav {
-    display: flex;
+    display: none;
     align-items: center;
-    gap: 2px;
+    gap: 8px;
+    margin-right: 16px;
+  }
+  @media (min-width: 720px) {
+    .nav {
+      display: flex;
+    }
   }
   .nav a {
     position: relative;
-    padding: 8px 7px;
-    white-space: nowrap;
-    font-size: 15px;
+    padding: 8px 10px;
+    font-size: 16px;
     font-weight: 500;
+    white-space: nowrap;
     color: var(--ink-2);
     transition: color 0.2s;
   }
@@ -427,8 +518,8 @@
   .nav a::after {
     content: "";
     position: absolute;
-    left: 7px;
-    right: 7px;
+    left: 10px;
+    right: 10px;
     bottom: 2px;
     height: 2px;
     background: var(--signal);
@@ -444,55 +535,123 @@
   .nav a:hover:not([aria-current="page"])::after {
     opacity: 0.35;
   }
-  @media (min-width: 768px) {
-    .nav {
-      gap: 8px;
-      margin-right: 16px;
-    }
-    .nav a {
-      padding-inline: 10px;
-      font-size: 16px;
-    }
-    .nav a::after {
-      left: 10px;
-      right: 10px;
+
+  /* Phone menu: the button turns into an X, the links rise in. */
+  .menu-btn {
+    margin-left: 2px;
+  }
+  @media (min-width: 720px) {
+    .menu-btn {
+      display: none;
     }
   }
+  .menu-btn__lines {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 10px;
+  }
+  .menu-btn__lines span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .menu-btn__lines span:first-child {
+    top: 0;
+  }
+  .menu-btn__lines span:last-child {
+    bottom: 0;
+  }
+  .menu-btn[aria-expanded="true"] .menu-btn__lines span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .menu-btn[aria-expanded="true"] .menu-btn__lines span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  .phone-menu {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + var(--bar) + 1px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 39;
+    padding: 24px var(--gutter) calc(env(safe-area-inset-bottom) + 32px);
+    background: var(--paper);
+    overflow-y: auto;
+    visibility: hidden;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.5s var(--ease-out), visibility 0s linear 0.5s;
+  }
+  .phone-menu[data-open] {
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.5s var(--ease-out), visibility 0s;
+  }
+  @media (min-width: 720px) {
+    .phone-menu {
+      display: none;
+    }
+  }
+  .phone-menu li {
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .phone-menu a {
+    display: block;
+    padding: 18px 0;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2rem, 10vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    transform: translateY(105%);
+    transition: transform 0.6s var(--ease-out);
+    transition-delay: calc(0.08s + var(--i, 0) * 60ms);
+  }
+  .phone-menu[data-open] a {
+    transform: none;
+  }
+  .phone-menu a[aria-current="page"] {
+    color: var(--signal);
+  }
+  html[data-motion="reduced"] .phone-menu,
+  html[data-motion="reduced"] .phone-menu[data-open] {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0s linear 0.2s;
+  }
+  html[data-motion="reduced"] .phone-menu[data-open] {
+    opacity: 1;
+    transition: opacity 0.2s, visibility 0s;
+  }
+  html[data-motion="reduced"] .phone-menu a {
+    transform: none;
+  }
+  html.menu-open {
+    overflow: hidden;
+  }
+
   .tools {
     display: flex;
     align-items: center;
   }
-  /* Small phones (and the longer Macedonian labels): tighten the bar. */
-  @media (max-width: 389px) {
+  /* Small phones: the name next to the logo gives way to the buttons. */
+  @media (max-width: 359px) {
     .wrap {
       padding-inline: 16px;
     }
-    .topbar__inner {
-      gap: 2px;
-    }
-    .nav a {
-      padding-inline: 5px;
-      font-size: 14px;
-    }
-    .nav a::after {
-      left: 5px;
-      right: 5px;
-    }
-    .tools .icon-btn {
-      min-width: 34px;
-    }
-    .brand__mark {
-      width: 32px;
-      height: 32px;
+    .brand__clip {
+      display: none;
     }
   }
-  @media (max-width: 340px) {
-    .nav a {
-      padding-inline: 4px;
-      font-size: 13px;
-    }
-    .tools .icon-btn {
-      min-width: 32px;
+  @media (max-width: 719px) {
+    .brand__name {
+      font-size: 14px;
     }
   }
 
@@ -1499,6 +1658,14 @@ html[data-motion="full"] .hero__photo img {
   animation: settle 1.6s var(--ease-out) 0.2s both;
 }
 
+/* Background glows drift very slowly. */
+html[data-motion="full"] .backdrop__glow--a {
+  animation: drift-a 32s ease-in-out infinite alternate;
+}
+html[data-motion="full"] .backdrop__glow--b {
+  animation: drift-b 40s ease-in-out infinite alternate;
+}
+
 /* Titles whose words rise one after another (see components/motion/rise.tsx). */
 .rise__w {
   display: inline-block;
@@ -1628,6 +1795,16 @@ html[data-motion="reduced"] dialog.sheet .sheet__body {
 @keyframes fade {
   from {
     opacity: 0;
+  }
+}
+@keyframes drift-a {
+  to {
+    transform: translate3d(18vmax, 10vmax, 0) scale(1.1);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-16vmax, -12vmax, 0) scale(0.92);
   }
 }
 @keyframes fade-up {

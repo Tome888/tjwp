@@ -7,6 +7,7 @@ import { getDict, langFrom, LANGS, type LangParams } from "@/lib/i18n"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { MotionRoot } from "@/components/motion/motion-root"
+import { Backdrop } from "@/components/backdrop"
 import "../globals.css"
 
 // Type: Unbounded for the name and titles, Onest for text. Both are
@@ -78,6 +79,7 @@ export default async function RootLayout({ children, params }: LangParams & { ch
             firstName={site.profile.firstName[lang]}
             lastName={site.profile.lastName[lang]}
           />
+          <Backdrop />
           <div id="page">
             <main id="main">{children}</main>
             <SiteFooter lang={lang} />
