@@ -62,16 +62,16 @@
 :root {
   --paper: #f1f2ee;
   --surface: #ffffff;
-  --plate: #dfe2e8;
-  --shade: #e5e9f1;
-  --deep: #0e1b4d;
-  --ink: #0e1b4d;
-  --ink-2: #4c5675;
-  --line: #cdd1da;
-  --signal: #2b44ff;
+  --plate: #dce2ea;
+  --shade: #e2e9f2;
+  --deep: #0d1b3e;
+  --ink: #0d1b3e;
+  --ink-2: #4a5670;
+  --line: #cbd3de;
+  --signal: #1556f0;
   --on-signal: #ffffff;
   --danger: #c4231a;
-  --scrim: rgba(10, 17, 48, 0.55);
+  --scrim: rgba(8, 18, 42, 0.55);
 
   --display: "Unbounded", "Onest", system-ui, sans-serif;
   --text: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -83,18 +83,18 @@
 }
 
 .dark {
-  --paper: #0a1130;
-  --surface: #121b42;
-  --plate: #18224d;
-  --shade: #0e1739;
-  --deep: #1a2a7a;
-  --ink: #eceef5;
-  --ink-2: #a2aac6;
-  --line: #283260;
-  --signal: #93a2ff;
-  --on-signal: #0a1130;
+  --paper: #08122a;
+  --surface: #10203d;
+  --plate: #15233f;
+  --shade: #0c1a33;
+  --deep: #13305e;
+  --ink: #ebf0f7;
+  --ink-2: #a0aec4;
+  --line: #22324f;
+  --signal: #7fb0ff;
+  --on-signal: #08122a;
   --danger: #ff8a80;
-  --scrim: rgba(3, 6, 20, 0.7);
+  --scrim: rgba(2, 8, 20, 0.7);
   color-scheme: dark;
 }
 
@@ -166,8 +166,6 @@
   }
 
   #page {
-    position: relative;
-    z-index: 1;
     min-height: 100dvh;
   }
 
@@ -186,69 +184,15 @@
     --line: rgba(241, 242, 238, 0.2);
     --plate: rgba(255, 255, 255, 0.08);
     --paper: var(--deep);
-    --signal: #a9b6ff;
-    --on-signal: #0e1b4d;
+    --signal: #9cc3ff;
+    --on-signal: #0d1b3e;
     background: var(--deep);
     color: var(--ink);
   }
   .band--deep ::selection {
-    background: rgba(169, 182, 255, 0.35);
+    background: rgba(156, 195, 255, 0.35);
   }
 
-  /* ── Background ─────────────────────────────────────────────────────── */
-  .backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  .backdrop__dots {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1px, transparent 1.5px);
-    background-size: 24px 24px;
-    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 0%, transparent 75%);
-    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 0%, transparent 75%);
-  }
-  .backdrop__glow {
-    position: absolute;
-    width: 70vmax;
-    height: 70vmax;
-    border-radius: 50%;
-    will-change: transform;
-  }
-  .backdrop__glow--a {
-    top: -35vmax;
-    left: -20vmax;
-    background: radial-gradient(circle, color-mix(in srgb, var(--signal) 13%, transparent) 0%, transparent 62%);
-  }
-  .backdrop__glow--b {
-    top: 30vh;
-    right: -35vmax;
-    background: radial-gradient(circle, color-mix(in srgb, #7b5cff 9%, transparent) 0%, transparent 62%);
-  }
-  .dark .backdrop__glow--a {
-    background: radial-gradient(circle, color-mix(in srgb, var(--signal) 16%, transparent) 0%, transparent 62%);
-  }
-  .backdrop__spot {
-    position: absolute;
-    top: -260px;
-    left: -260px;
-    width: 520px;
-    height: 520px;
-    border-radius: 50%;
-    background: radial-gradient(circle, color-mix(in srgb, var(--signal) 9%, transparent) 0%, transparent 65%);
-    opacity: 0;
-    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
-    will-change: transform;
-  }
-  .backdrop__spot[data-on] {
-    opacity: 1;
-  }
-  html[data-motion="reduced"] .backdrop__spot {
-    display: none;
-  }
 
   .page-head {
     padding-top: 56px;
@@ -1658,14 +1602,6 @@ html[data-motion="full"] .hero__photo img {
   animation: settle 1.6s var(--ease-out) 0.2s both;
 }
 
-/* Background glows drift very slowly. */
-html[data-motion="full"] .backdrop__glow--a {
-  animation: drift-a 32s ease-in-out infinite alternate;
-}
-html[data-motion="full"] .backdrop__glow--b {
-  animation: drift-b 40s ease-in-out infinite alternate;
-}
-
 /* Titles whose words rise one after another (see components/motion/rise.tsx). */
 .rise__w {
   display: inline-block;
@@ -1795,16 +1731,6 @@ html[data-motion="reduced"] dialog.sheet .sheet__body {
 @keyframes fade {
   from {
     opacity: 0;
-  }
-}
-@keyframes drift-a {
-  to {
-    transform: translate3d(18vmax, 10vmax, 0) scale(1.1);
-  }
-}
-@keyframes drift-b {
-  to {
-    transform: translate3d(-16vmax, -12vmax, 0) scale(0.92);
   }
 }
 @keyframes fade-up {
