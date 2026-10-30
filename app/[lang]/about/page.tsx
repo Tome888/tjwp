@@ -50,6 +50,10 @@ export default async function AboutPage(props: LangParams) {
                 <dt>{t.location}</dt>
                 <dd>{profile.location[lang]}</dd>
               </div>
+              <div>
+                <dt>{t.citizenship}</dt>
+                <dd>{profile.citizenship[lang]}</dd>
+              </div>
             </dl>
           </div>
 

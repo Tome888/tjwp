@@ -41,6 +41,8 @@ export function Hero({ lang }: { lang: Lang }) {
           ) : null}
           <p className="hero__meta enter" style={{ "--d": 2 } as Vars}>
             {p.role[lang]}, {p.location[lang]}.
+            <br />
+            {p.citizenship[lang]}.
             {p.available ? (
               <>
                 {" "}
