@@ -68,6 +68,7 @@ export default async function AboutPage(props: LangParams) {
         </div>
       </section>
 
+      <div className="band band--shade">
       <section className="wrap section" aria-labelledby="skills-title">
         <SectionHead id="skills-title" title={t.skillsLabel} />
         <dl className="skills" data-reveal>
@@ -80,6 +81,7 @@ export default async function AboutPage(props: LangParams) {
         </dl>
         <p className="footnote mt-5 max-w-[36em]">{t.skillsNote}</p>
       </section>
+      </div>
 
       <section className="wrap section" aria-labelledby="edu-title">
         <SectionHead id="edu-title" title={t.educationLabel} />

@@ -62,14 +62,16 @@
 :root {
   --paper: #f1f2ee;
   --surface: #ffffff;
-  --plate: #dfe2e8;
-  --ink: #0e1b4d;
-  --ink-2: #4c5675;
-  --line: #cdd1da;
-  --signal: #2b44ff;
+  --plate: #dce2ea;
+  --shade: #e2e9f2;
+  --deep: #0d1b3e;
+  --ink: #0d1b3e;
+  --ink-2: #4a5670;
+  --line: #cbd3de;
+  --signal: #1556f0;
   --on-signal: #ffffff;
   --danger: #c4231a;
-  --scrim: rgba(10, 17, 48, 0.55);
+  --scrim: rgba(8, 18, 42, 0.55);
 
   --display: "Unbounded", "Onest", system-ui, sans-serif;
   --text: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -81,16 +83,18 @@
 }
 
 .dark {
-  --paper: #0a1130;
-  --surface: #121b42;
-  --plate: #18224d;
-  --ink: #eceef5;
-  --ink-2: #a2aac6;
-  --line: #283260;
-  --signal: #93a2ff;
-  --on-signal: #0a1130;
+  --paper: #08122a;
+  --surface: #10203d;
+  --plate: #15233f;
+  --shade: #0c1a33;
+  --deep: #13305e;
+  --ink: #ebf0f7;
+  --ink-2: #a0aec4;
+  --line: #22324f;
+  --signal: #7fb0ff;
+  --on-signal: #08122a;
   --danger: #ff8a80;
-  --scrim: rgba(3, 6, 20, 0.7);
+  --scrim: rgba(2, 8, 20, 0.7);
   color-scheme: dark;
 }
 
@@ -164,6 +168,31 @@
   #page {
     min-height: 100dvh;
   }
+
+  /* ── Bands: full-width sections with their own shade ─────────────────── */
+  .band {
+    position: relative;
+  }
+  .band--shade {
+    background: var(--shade);
+  }
+  /* Deep: an inverted section. Re-pointing the tokens recolors everything
+     inside it (text, lines, buttons, image plates) with no extra rules. */
+  .band--deep {
+    --ink: #f1f2ee;
+    --ink-2: rgba(241, 242, 238, 0.72);
+    --line: rgba(241, 242, 238, 0.2);
+    --plate: rgba(255, 255, 255, 0.08);
+    --paper: var(--deep);
+    --signal: #9cc3ff;
+    --on-signal: #0d1b3e;
+    background: var(--deep);
+    color: var(--ink);
+  }
+  .band--deep ::selection {
+    background: rgba(156, 195, 255, 0.35);
+  }
+
 
   .page-head {
     padding-top: 56px;
@@ -407,16 +436,22 @@
     transform: none;
   }
   .nav {
-    display: flex;
+    display: none;
     align-items: center;
-    gap: 2px;
+    gap: 8px;
+    margin-right: 16px;
+  }
+  @media (min-width: 720px) {
+    .nav {
+      display: flex;
+    }
   }
   .nav a {
     position: relative;
-    padding: 8px 7px;
-    white-space: nowrap;
-    font-size: 15px;
+    padding: 8px 10px;
+    font-size: 16px;
     font-weight: 500;
+    white-space: nowrap;
     color: var(--ink-2);
     transition: color 0.2s;
   }
@@ -427,8 +462,8 @@
   .nav a::after {
     content: "";
     position: absolute;
-    left: 7px;
-    right: 7px;
+    left: 10px;
+    right: 10px;
     bottom: 2px;
     height: 2px;
     background: var(--signal);
@@ -444,55 +479,123 @@
   .nav a:hover:not([aria-current="page"])::after {
     opacity: 0.35;
   }
-  @media (min-width: 768px) {
-    .nav {
-      gap: 8px;
-      margin-right: 16px;
-    }
-    .nav a {
-      padding-inline: 10px;
-      font-size: 16px;
-    }
-    .nav a::after {
-      left: 10px;
-      right: 10px;
+
+  /* Phone menu: the button turns into an X, the links rise in. */
+  .menu-btn {
+    margin-left: 2px;
+  }
+  @media (min-width: 720px) {
+    .menu-btn {
+      display: none;
     }
   }
+  .menu-btn__lines {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 10px;
+  }
+  .menu-btn__lines span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .menu-btn__lines span:first-child {
+    top: 0;
+  }
+  .menu-btn__lines span:last-child {
+    bottom: 0;
+  }
+  .menu-btn[aria-expanded="true"] .menu-btn__lines span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .menu-btn[aria-expanded="true"] .menu-btn__lines span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  .phone-menu {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + var(--bar) + 1px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 39;
+    padding: 24px var(--gutter) calc(env(safe-area-inset-bottom) + 32px);
+    background: var(--paper);
+    overflow-y: auto;
+    visibility: hidden;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.5s var(--ease-out), visibility 0s linear 0.5s;
+  }
+  .phone-menu[data-open] {
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.5s var(--ease-out), visibility 0s;
+  }
+  @media (min-width: 720px) {
+    .phone-menu {
+      display: none;
+    }
+  }
+  .phone-menu li {
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .phone-menu a {
+    display: block;
+    padding: 18px 0;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2rem, 10vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    transform: translateY(105%);
+    transition: transform 0.6s var(--ease-out);
+    transition-delay: calc(0.08s + var(--i, 0) * 60ms);
+  }
+  .phone-menu[data-open] a {
+    transform: none;
+  }
+  .phone-menu a[aria-current="page"] {
+    color: var(--signal);
+  }
+  html[data-motion="reduced"] .phone-menu,
+  html[data-motion="reduced"] .phone-menu[data-open] {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0s linear 0.2s;
+  }
+  html[data-motion="reduced"] .phone-menu[data-open] {
+    opacity: 1;
+    transition: opacity 0.2s, visibility 0s;
+  }
+  html[data-motion="reduced"] .phone-menu a {
+    transform: none;
+  }
+  html.menu-open {
+    overflow: hidden;
+  }
+
   .tools {
     display: flex;
     align-items: center;
   }
-  /* Small phones (and the longer Macedonian labels): tighten the bar. */
-  @media (max-width: 389px) {
+  /* Small phones: the name next to the logo gives way to the buttons. */
+  @media (max-width: 359px) {
     .wrap {
       padding-inline: 16px;
     }
-    .topbar__inner {
-      gap: 2px;
-    }
-    .nav a {
-      padding-inline: 5px;
-      font-size: 14px;
-    }
-    .nav a::after {
-      left: 5px;
-      right: 5px;
-    }
-    .tools .icon-btn {
-      min-width: 34px;
-    }
-    .brand__mark {
-      width: 32px;
-      height: 32px;
+    .brand__clip {
+      display: none;
     }
   }
-  @media (max-width: 340px) {
-    .nav a {
-      padding-inline: 4px;
-      font-size: 13px;
-    }
-    .tools .icon-btn {
-      min-width: 32px;
+  @media (max-width: 719px) {
+    .brand__name {
+      font-size: 14px;
     }
   }
 

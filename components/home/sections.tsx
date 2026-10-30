@@ -25,6 +25,7 @@ export function SectionHead({ id, title, more }: { id?: string; title: string; m
 export function Services({ lang }: { lang: Lang }) {
   const t = getDict(lang).home
   return (
+    <div className="band band--shade">
     <section className="wrap section" aria-labelledby="services-title">
       <SectionHead id="services-title" title={t.servicesLabel} />
       <ul className="services">
@@ -36,6 +37,7 @@ export function Services({ lang }: { lang: Lang }) {
         ))}
       </ul>
     </section>
+    </div>
   )
 }
 
@@ -44,6 +46,7 @@ export function Products({ lang }: { lang: Lang }) {
   const t = getDict(lang).home
   if (!site.products.length) return null
   return (
+    <div className="band band--deep">
     <section className="wrap section" aria-labelledby="products-title">
       <SectionHead id="products-title" title={t.productsLabel} />
       <div className="grid gap-16">
@@ -77,6 +80,7 @@ export function Products({ lang }: { lang: Lang }) {
         ))}
       </div>
     </section>
+    </div>
   )
 }
 
