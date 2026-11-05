@@ -499,8 +499,10 @@
       0 0 0 1px var(--line),
       0 18px 40px -16px rgba(2, 7, 10, 0.45);
   }
-  /* Reading progress: a hairline along the bottom of the bar, blue into
-     orange. Runs off the scroll position in CSS, no JavaScript. */
+  /* Reading progress: a hairline along the bottom of the bar. The gradient
+     is laid out across the full width and stays put; scrolling uncovers it
+     from the left, so the line turns from blue to orange as you go down.
+     --p (0 to 1) is set from the scroll position (see ScrollProgress). */
   .topbar__progress {
     position: absolute;
     left: 28px;
@@ -509,21 +511,8 @@
     height: 2px;
     border-radius: 2px;
     background: linear-gradient(90deg, var(--blue), #f4e6da 55%, var(--orange));
-    transform-origin: left;
-    transform: scaleX(0);
-    opacity: 0;
-  }
-  @supports (animation-timeline: scroll()) {
-    .topbar__progress {
-      opacity: 1;
-      animation: progress linear both;
-      animation-timeline: scroll(root block);
-    }
-  }
-  @keyframes progress {
-    to {
-      transform: scaleX(1);
-    }
+    clip-path: inset(0 calc((1 - var(--p, 0)) * 100%) 0 0 round 2px);
+    pointer-events: none;
   }
 
   .brand {
@@ -573,7 +562,9 @@
     align-items: center;
     margin-right: 6px;
   }
-  @media (min-width: 760px) {
+  /* Only with a mouse or trackpad. Tablets get just the Menu button,
+     so the bar never shows two menus at once. */
+  @media (min-width: 760px) and (hover: hover) and (pointer: fine) {
     .nav {
       display: flex;
     }
@@ -663,6 +654,15 @@
   @media (min-width: 760px) {
     .jump-btn {
       display: inline-flex;
+    }
+  }
+  /* No keyboard shortcut hint on touch screens. */
+  @media (hover: none), (pointer: coarse) {
+    .jump-btn {
+      padding-right: 16px;
+    }
+    .jump-btn kbd {
+      display: none;
     }
   }
 
