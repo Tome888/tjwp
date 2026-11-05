@@ -5,15 +5,18 @@ import type { Dict } from "@/i18n/en"
 
 type Mode = "full" | "reduced"
 
-/**
- * Motion: Full / Calm. Calm turns the movement into quick fades. The choice
- * is remembered on this device; by default it follows the OS "reduce motion"
- * setting. The selected side is drawn by CSS from html[data-motion], so it
- * is right from the first paint.
- */
-export function MotionToggle({ t }: { t: Dict["nav"] }) {
-  const [mode, setMode] = useState<Mode | null>(null)
+/** Sets Full / Calm and remembers it on this device. */
+export function setMotion(next: Mode) {
+  document.documentElement.dataset.motion = next
+  try {
+    localStorage.setItem("motion", next)
+  } catch {}
+  window.dispatchEvent(new Event("motionchange"))
+}
 
+/** The current Full / Calm setting, kept in sync with html[data-motion]. */
+export function useMotionMode() {
+  const [mode, setMode] = useState<Mode | null>(null)
   useEffect(() => {
     const root = document.documentElement
     const read = () => setMode(root.dataset.motion === "reduced" ? "reduced" : "full")
@@ -22,14 +25,18 @@ export function MotionToggle({ t }: { t: Dict["nav"] }) {
     watch.observe(root, { attributes: true, attributeFilter: ["data-motion"] })
     return () => watch.disconnect()
   }, [])
+  return mode
+}
 
-  const choose = (next: Mode) => {
-    document.documentElement.dataset.motion = next
-    try {
-      localStorage.setItem("motion", next)
-    } catch {}
-    window.dispatchEvent(new Event("motionchange"))
-  }
+/**
+ * Motion: Full / Calm. Calm turns the movement into quick fades. The choice
+ * is remembered on this device; by default it follows the OS "reduce motion"
+ * setting. The selected side is drawn by CSS from html[data-motion], so it
+ * is right from the first paint.
+ */
+export function MotionToggle({ t }: { t: Dict["nav"] }) {
+  const mode = useMotionMode()
+  const choose = setMotion
 
   return (
     <div className="flex items-center">

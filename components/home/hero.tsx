@@ -21,7 +21,8 @@ export function Hero({ lang }: { lang: Lang }) {
   const [, rest] = leadSentence(p.intro[lang])
 
   return (
-    <section className="wrap hero" aria-labelledby="hero-name">
+    <div className="wrap">
+    <section id="intro" className="stage hero" aria-labelledby="hero-name">
       <h1 id="hero-name" className="name">
         <span className="name__line name__line--main">
           <span>{main}</span>
@@ -51,7 +52,7 @@ export function Hero({ lang }: { lang: Lang }) {
             ) : null}
           </p>
           <div className="hero__actions enter" style={{ "--d": 3 } as Vars}>
-            <a href="#work" className="btn btn--ink">
+            <a href="#work" className="btn btn--fill">
               {t.seeWork}
             </a>
             <Link href="/contact" className="more-link">
@@ -72,5 +73,6 @@ export function Hero({ lang }: { lang: Lang }) {
         </div>
       </div>
     </section>
+    </div>
   )
 }

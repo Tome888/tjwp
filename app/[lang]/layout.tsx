@@ -7,6 +7,7 @@ import { getDict, langFrom, LANGS, type LangParams } from "@/lib/i18n"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { MotionRoot } from "@/components/motion/motion-root"
+import { homeSections } from "@/lib/sections"
 import "../globals.css"
 
 // Type: Unbounded for the name and titles, Onest for text. Both are
@@ -53,15 +54,14 @@ export const viewport: Viewport = {
   // env(safe-area-inset-*) to stay clear of them.
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f1f2ee" },
-    { media: "(prefers-color-scheme: dark)", color: "#08122a" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f7f8" },
+    { media: "(prefers-color-scheme: dark)", color: "#02070a" },
   ],
 }
 
 export default async function RootLayout({ children, params }: LangParams & { children: ReactNode }) {
   const lang = await langFrom({ params })
   const t = getDict(lang)
-
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
@@ -77,6 +77,7 @@ export default async function RootLayout({ children, params }: LangParams & { ch
             t={t.nav}
             firstName={site.profile.firstName[lang]}
             lastName={site.profile.lastName[lang]}
+            sections={homeSections(lang)}
           />
           <div id="page">
             <main id="main">{children}</main>
