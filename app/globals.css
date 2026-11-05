@@ -764,9 +764,14 @@
       radial-gradient(80% 40% at 70% 108%, var(--glow-orange), var(--glow-orange-soft) 50%, transparent 76%),
       radial-gradient(28% 8% at 70% 100%, var(--glow-core), transparent 70%);
   }
+  /* The panel is as tall as the large viewport (so its glow reaches under
+     Safari's toolbar), but the part that scrolls is only as tall as what's
+     actually visible. Otherwise the last links sit under the toolbar and
+     there's nothing to scroll. */
   .navi__scroll {
-    flex: 1 1 auto;
-    min-height: 0;
+    flex: none;
+    height: 100vh;
+    height: 100dvh;
     overflow-y: auto;
     overscroll-behavior: contain;
     padding-bottom: calc(env(safe-area-inset-bottom) + 96px);
