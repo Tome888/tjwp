@@ -193,11 +193,34 @@
   }
   /* Deep: an inverted section. Re-pointing the tokens recolors everything
      inside it (text, lines, buttons, image plates) with no extra rules. */
-  /* Night: the midnight surface with the two lights. Same in both themes.
-     Re-pointing the tokens recolors everything inside it. */
+  /* Stage: a surface lit blue from above and orange from the horizon.
+     Light theme: a pale sky over a peach horizon. Dark theme: midnight. */
   .band--deep,
   .stage,
   .navi {
+    --stage-bg: #e9f1f5;
+    --glow-blue: rgba(2, 151, 222, 0.34);
+    --glow-blue-soft: rgba(2, 151, 222, 0.08);
+    --glow-orange: rgba(252, 115, 77, 0.5);
+    --glow-orange-soft: rgba(252, 115, 77, 0.14);
+    --glow-core: rgba(255, 248, 242, 0.95);
+    --ray: rgba(2, 7, 10, 0.045);
+    --plate: rgba(2, 7, 10, 0.05);
+    position: relative;
+    isolation: isolate;
+    background: var(--stage-bg);
+    color: var(--ink);
+  }
+  .dark .band--deep,
+  .dark .stage,
+  .dark .navi {
+    --stage-bg: var(--midnight);
+    --glow-blue: rgba(2, 151, 222, 0.72);
+    --glow-blue-soft: rgba(2, 151, 222, 0.16);
+    --glow-orange: rgba(252, 115, 77, 0.92);
+    --glow-orange-soft: rgba(252, 115, 77, 0.26);
+    --glow-core: rgba(255, 232, 214, 0.6);
+    --ray: rgba(255, 255, 255, 0.06);
     --ink: #eef4f7;
     --ink-2: rgba(238, 244, 247, 0.7);
     --line: rgba(238, 244, 247, 0.14);
@@ -207,10 +230,6 @@
     --signal: #2bb0f0;
     --on-signal: #02070a;
     --accent-ink: var(--orange);
-    position: relative;
-    isolation: isolate;
-    background: var(--midnight);
-    color: var(--ink);
   }
   .band--deep {
     overflow: hidden;
@@ -225,9 +244,9 @@
     z-index: -2;
     pointer-events: none;
     background:
-      radial-gradient(64% 52% at 50% -6%, rgba(2, 151, 222, 0.72), rgba(2, 151, 222, 0.16) 48%, transparent 74%),
-      radial-gradient(58% 46% at 50% 108%, rgba(252, 115, 77, 0.92), rgba(252, 115, 77, 0.26) 46%, transparent 74%),
-      radial-gradient(26% 9% at 50% 99%, rgba(255, 232, 214, 0.6), transparent 70%);
+      radial-gradient(64% 52% at 50% -6%, var(--glow-blue), var(--glow-blue-soft) 48%, transparent 74%),
+      radial-gradient(58% 46% at 50% 108%, var(--glow-orange), var(--glow-orange-soft) 46%, transparent 74%),
+      radial-gradient(26% 9% at 50% 99%, var(--glow-core), transparent 70%);
   }
   /* Fine vertical light lines, strongest near the top and the horizon. */
   .stage::after {
@@ -236,15 +255,15 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 7px);
+    background: repeating-linear-gradient(90deg, var(--ray) 0 1px, transparent 1px 7px);
     -webkit-mask-image: linear-gradient(to bottom, #000, transparent 34%, transparent 66%, #000);
     mask-image: linear-gradient(to bottom, #000, transparent 34%, transparent 66%, #000);
   }
   /* Products: the lights come in from the corners instead. */
   .band--deep::before {
     background:
-      radial-gradient(52% 70% at 0% 0%, rgba(2, 151, 222, 0.5), transparent 70%),
-      radial-gradient(50% 70% at 100% 100%, rgba(252, 115, 77, 0.55), transparent 70%);
+      radial-gradient(52% 70% at 0% 0%, var(--glow-blue), transparent 70%),
+      radial-gradient(50% 70% at 100% 100%, var(--glow-orange), transparent 70%);
   }
   .stage {
     overflow: hidden;
@@ -255,8 +274,8 @@
       border-radius: 22px;
     }
   }
-  .dark .stage {
-    box-shadow: 0 0 0 1px rgba(238, 244, 247, 0.08);
+  .stage {
+    box-shadow: 0 0 0 1px var(--line);
   }
 
 
@@ -728,10 +747,6 @@
       opacity 0.2s,
       visibility 0s;
   }
-  .navi[data-instant],
-  .navi[data-instant] * {
-    transition: none !important;
-  }
   .navi::before {
     content: "";
     position: absolute;
@@ -739,9 +754,9 @@
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(60% 40% at 18% -10%, rgba(2, 151, 222, 0.55), transparent 70%),
-      radial-gradient(70% 38% at 70% 112%, rgba(252, 115, 77, 0.7), rgba(252, 115, 77, 0.18) 50%, transparent 75%),
-      radial-gradient(24% 7% at 70% 100%, rgba(255, 232, 214, 0.45), transparent 70%);
+      radial-gradient(60% 40% at 18% -10%, var(--glow-blue), transparent 70%),
+      radial-gradient(70% 38% at 70% 112%, var(--glow-orange), var(--glow-orange-soft) 50%, transparent 75%),
+      radial-gradient(24% 7% at 70% 100%, var(--glow-core), transparent 70%);
   }
   .navi__scroll {
     flex: 1 1 auto;
@@ -837,27 +852,35 @@
   }
   .navi__page:hover,
   .navi__page[aria-current="page"] {
-    color: var(--orange);
+    color: var(--accent-ink);
   }
   .navi__page:hover svg {
     opacity: 1;
     transform: none;
   }
-  .navi__sections {
+  /* On this page: a quieter numbered list next to the pages. */
+  .navi__sections li {
+    border-top: 1px solid var(--line);
+  }
+  .navi__sections li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .navi__sections a {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 28px;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: color 0.2s;
   }
-  .navi__sections .chip {
-    color: var(--ink);
+  .navi__sections a:hover {
+    color: var(--accent-ink);
   }
-  .navi__sections .chip:hover {
-    border-color: var(--orange);
-    color: var(--orange);
+  .navi__sections .navi__num {
+    width: 2em;
   }
-
-  /* Project search. */
   .navi__side {
     min-width: 0;
     transition:
@@ -870,142 +893,6 @@
   }
   html[data-motion="reduced"] .navi__side {
     transform: none !important;
-  }
-  .navi__search {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    height: 52px;
-    padding: 0 16px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.04);
-    transition: border-color 0.2s;
-  }
-  .navi__search:focus-within {
-    border-color: var(--orange);
-  }
-  .navi__search svg {
-    flex: none;
-    font-size: 18px;
-    color: var(--ink-2);
-  }
-  .navi__search input {
-    flex: 1;
-    min-width: 0;
-    height: 100%;
-    border: 0;
-    background: none;
-    color: var(--ink);
-    font: inherit;
-    font-size: 16px;
-    outline: none;
-  }
-  .navi__search input::placeholder {
-    color: var(--ink-2);
-  }
-  .navi__results {
-    display: grid;
-    gap: 2px;
-    margin-top: 12px;
-  }
-  /* Desktop: the list scrolls on its own so the settings stay in view. */
-  @media (min-width: 900px) {
-    .navi__results {
-      max-height: max(240px, calc(100dvh - 420px));
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      scrollbar-width: thin;
-      padding-right: 4px;
-    }
-  }
-  .navi__result {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    width: 100%;
-    padding: 8px;
-    border-radius: 14px;
-    text-align: left;
-    transition: background-color 0.15s;
-  }
-  .navi__result[data-active] {
-    background: rgba(255, 255, 255, 0.07);
-  }
-  .navi__thumb {
-    position: relative;
-    flex: none;
-    width: 64px;
-    aspect-ratio: 16 / 10;
-    border-radius: 8px;
-    overflow: hidden;
-    background: var(--plate);
-  }
-  .navi__thumb .plate {
-    padding: 6px;
-  }
-  .navi__thumb .plate__mark {
-    font-size: 16px;
-  }
-  .navi__thumb .plate__name {
-    display: none;
-  }
-  .navi__result-text {
-    flex: 1;
-    min-width: 0;
-  }
-  .navi__result-title {
-    display: block;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .navi__result-sub {
-    display: block;
-    font-size: 14px;
-    color: var(--ink-2);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .navi__result svg {
-    flex: none;
-    color: var(--orange);
-    opacity: 0;
-    transform: translateX(-6px);
-    transition:
-      opacity 0.2s,
-      transform 0.25s var(--ease-out);
-  }
-  .navi__result[data-active] svg {
-    opacity: 1;
-    transform: none;
-  }
-  .navi__empty {
-    padding: 20px 8px;
-    color: var(--ink-2);
-  }
-
-  /* Settings row: language, theme, motion. */
-  .navi__settings {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px 28px;
-    margin-top: 40px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-  }
-  .navi__hint {
-    margin-left: auto;
-    font-size: 13px;
-    color: var(--ink-2);
-  }
-  @media (pointer: coarse) {
-    .navi__hint {
-      display: none;
-    }
   }
   .seg button[aria-pressed="true"] {
     background: var(--ink);
@@ -1092,7 +979,7 @@
   }
   .hero__photo {
     box-shadow:
-      0 0 0 1px rgba(238, 244, 247, 0.12),
+      0 0 0 1px var(--line),
       0 30px 80px -30px rgba(252, 115, 77, 0.6);
   }
 
@@ -1415,9 +1302,9 @@
   /* The CTA's light comes up from behind the right side. */
   .cta.stage::before {
     background:
-      radial-gradient(50% 60% at 0% 0%, rgba(2, 151, 222, 0.55), transparent 72%),
-      radial-gradient(60% 70% at 88% 120%, rgba(252, 115, 77, 0.9), rgba(252, 115, 77, 0.2) 50%, transparent 75%),
-      radial-gradient(22% 10% at 88% 100%, rgba(255, 232, 214, 0.5), transparent 70%);
+      radial-gradient(50% 60% at 0% 0%, var(--glow-blue), transparent 72%),
+      radial-gradient(60% 70% at 88% 120%, var(--glow-orange), var(--glow-orange-soft) 50%, transparent 75%),
+      radial-gradient(22% 10% at 88% 100%, var(--glow-core), transparent 70%);
   }
   .cta__title {
     font-family: var(--display);

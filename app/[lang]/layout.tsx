@@ -7,7 +7,6 @@ import { getDict, langFrom, LANGS, type LangParams } from "@/lib/i18n"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { MotionRoot } from "@/components/motion/motion-root"
-import { imagePath, projects } from "@/lib/content"
 import { homeSections } from "@/lib/sections"
 import "../globals.css"
 
@@ -63,18 +62,6 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children, params }: LangParams & { children: ReactNode }) {
   const lang = await langFrom({ params })
   const t = getDict(lang)
-  // What the navigator searches: every project, matched in both languages.
-  const navProjects = projects.map((p) => ({
-    slug: p.slug,
-    title: p.title[lang],
-    sub: p.role?.[lang] ?? p.tags.slice(0, 3).join(" · "),
-    image: imagePath(p.image),
-    search: [p.title.en, p.title.mk, p.summary.en, p.summary.mk, p.role?.en, p.role?.mk, ...p.tags]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase(),
-  }))
-
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
@@ -90,7 +77,6 @@ export default async function RootLayout({ children, params }: LangParams & { ch
             t={t.nav}
             firstName={site.profile.firstName[lang]}
             lastName={site.profile.lastName[lang]}
-            projects={navProjects}
             sections={homeSections(lang)}
           />
           <div id="page">

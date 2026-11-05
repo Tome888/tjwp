@@ -9,7 +9,7 @@ import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
 import type { PageSection } from "@/lib/sections"
 import { Logo } from "@/components/logo"
-import { Navigator, type NavProject } from "@/components/navigator"
+import { Navigator } from "@/components/navigator"
 
 type Nav = Dict["nav"]
 
@@ -25,14 +25,12 @@ export function SiteHeader({
   t,
   firstName,
   lastName,
-  projects,
   sections,
 }: {
   lang: Lang
   t: Nav
   firstName: string
   lastName: string
-  projects: NavProject[]
   /** Sections of the home page, offered in the navigator while on it. */
   sections: PageSection[]
 }) {
@@ -64,40 +62,9 @@ export function SiteHeader({
     setMenu(true)
   }, [])
   const close = useCallback(() => setMenu(false), [])
-  const [instant, setInstant] = useState(false)
 
-  // Switching language swaps the whole layout (each language is its own
-  // page set), which would close the navigator. If the switch came from the
-  // navigator, open it again straight away, without the opening animation.
-  const langFromNavigator = useCallback(
-    (target: Lang) => {
-      try {
-        sessionStorage.setItem("navi-reopen", "1")
-      } catch {}
-      chooseLang(target)
-    },
-    [chooseLang],
-  )
-  useEffect(() => {
-    try {
-      if (sessionStorage.getItem("navi-reopen") !== "1") return
-      sessionStorage.removeItem("navi-reopen")
-    } catch {
-      return
-    }
-    setInstant(true)
-    setMenu(true)
-    const id = window.setTimeout(() => setInstant(false), 120)
-    return () => clearTimeout(id)
-  }, [])
-
-  // Close on navigation (not on mount, which may be reopening it).
-  const lastPath = useRef(pathname)
-  useEffect(() => {
-    if (lastPath.current === pathname) return
-    lastPath.current = pathname
-    setMenu(false)
-  }, [pathname])
+  // Close on navigation.
+  useEffect(() => setMenu(false), [pathname])
 
   // ⌘K / Ctrl+K toggles; "/" opens (unless typing somewhere).
   useEffect(() => {
@@ -182,7 +149,7 @@ export function SiteHeader({
                 aria-controls="navigator"
                 onClick={(e) => openFrom(e.currentTarget)}
               >
-                {t.jump}
+                {t.menu}
                 <kbd aria-hidden="true">{shortcut}</kbd>
               </button>
               <button
@@ -211,16 +178,11 @@ export function SiteHeader({
         open={menu}
         origin={origin}
         onClose={close}
-        lang={lang}
         t={t}
         name={name}
         pages={links.map((l) => ({ href: l.href, label: t[l.key] }))}
         isActive={isActive}
         sections={onThisPage}
-        projects={projects}
-        onLang={langFromNavigator}
-        langPending={langPending}
-        instant={instant}
       />
     </>
   )
