@@ -24,7 +24,7 @@ export default async function ProjectsPage(props: LangParams) {
         <p className="lead enter mt-6" style={{ "--d": 2 } as CSSProperties}>{t.projects.lead}</p>
       </section>
 
-      <section className="wrap section !pt-6" aria-label={t.projects.indexLabel}>
+      <section id="projects" data-section={t.projects.indexLabel} className="wrap section !pt-6" aria-label={t.projects.indexLabel}>
         <ProjectIndex items={items} t={t.projects} />
       </section>
 

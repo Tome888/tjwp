@@ -28,7 +28,7 @@ export default async function ContactPage(props: LangParams) {
       <section className="wrap section !pt-6">
         <div className="contact-grid">
           <div className="grid grid-cols-[minmax(0,1fr)] content-start gap-10">
-            <div className="enter">
+            <div id="email" data-section={t.emailLabel} className="enter">
               <p className="footnote">{t.emailLabel}</p>
               <a href={`mailto:${contact.email}`} className="email-card__address">
                 {contact.email}
@@ -36,7 +36,7 @@ export default async function ContactPage(props: LangParams) {
               <CopyEmail email={contact.email} t={t} />
             </div>
 
-            <div className="enter" style={{ "--d": 1 } as Vars}>
+            <div id="elsewhere" data-section={t.elsewhere} className="enter" style={{ "--d": 1 } as Vars}>
               <p className="footnote form-group-label">{t.elsewhere}</p>
               <ul className="rows">
                 {contact.links.map((l) => (
@@ -57,7 +57,7 @@ export default async function ContactPage(props: LangParams) {
             ) : null}
           </div>
 
-          <div className="enter min-w-0" style={{ "--d": 1 } as Vars}>
+          <div id="message" data-section={t.formLabel} className="enter min-w-0" style={{ "--d": 1 } as Vars}>
             <ContactForm t={t} />
           </div>
         </div>

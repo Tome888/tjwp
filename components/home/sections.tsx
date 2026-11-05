@@ -26,7 +26,7 @@ export function Services({ lang }: { lang: Lang }) {
   const t = getDict(lang).home
   return (
     <div className="band band--shade">
-    <section id="services" className="wrap section" aria-labelledby="services-title">
+    <section id="services" data-section={t.servicesLabel} className="wrap section" aria-labelledby="services-title">
       <SectionHead id="services-title" title={t.servicesLabel} />
       <ul className="services">
         {site.services.map((s, i) => (
@@ -47,7 +47,7 @@ export function Products({ lang }: { lang: Lang }) {
   if (!site.products.length) return null
   return (
     <div className="band band--deep">
-    <section id="products" className="wrap section" aria-labelledby="products-title">
+    <section id="products" data-section={t.productsLabel} className="wrap section" aria-labelledby="products-title">
       <SectionHead id="products-title" title={t.productsLabel} />
       <div className="grid gap-16">
         {site.products.map((product) => (
@@ -89,7 +89,7 @@ export function Work({ lang }: { lang: Lang }) {
   const t = getDict(lang)
   if (!featuredProjects.length) return null
   return (
-    <section id="work" className="wrap section" aria-labelledby="work-title">
+    <section id="work" data-section={t.home.workLabel} className="wrap section" aria-labelledby="work-title">
       <SectionHead
         id="work-title"
         title={t.home.workLabel}
