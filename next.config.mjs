@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Deployed with Vercel.
 const nextConfig = {
   // Type errors (e.g. a missing field in content/site.ts) fail the build,
   // so a broken edit never reaches the live site.
