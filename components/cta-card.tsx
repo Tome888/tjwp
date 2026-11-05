@@ -8,8 +8,8 @@ import { Rise } from "@/components/motion/rise"
 export function CtaCard({ lang }: { lang: Lang }) {
   const t = getDict(lang).cta
   return (
-    <section className="wrap section" aria-labelledby="cta-title">
-      <div className="cta" data-reveal>
+    <section id="get-in-touch" className="wrap section" aria-labelledby="cta-title">
+      <div className="cta stage" data-reveal>
         <Rise id="cta-title" text={t.title} className="cta__title" />
         <div className="cta__side">
           <p className="cta__text">{t.text}</p>
