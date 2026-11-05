@@ -168,7 +168,7 @@ export function SiteHeader({
               </button>
             </div>
 
-            <span className="topbar__progress" aria-hidden="true" />
+            <ScrollProgress />
           </div>
         </div>
       </header>
@@ -259,6 +259,56 @@ function GlideNav({
       ))}
     </nav>
   )
+}
+
+/**
+ * The progress line under the bar. Reads the scroll position once per frame
+ * and hands it to CSS as --p. The page height is measured on resize and when
+ * the content changes, not on every scroll, so the line can't jump around
+ * while images load or the phone's toolbar slides in and out.
+ */
+function ScrollProgress() {
+  const line = useRef<HTMLSpanElement>(null)
+  useEffect(() => {
+    const el = line.current
+    if (!el) return
+    const root = document.documentElement
+    let max = 1
+    let frame = 0
+    let width = 0
+    let tallest = 0
+    const paint = () => {
+      frame = 0
+      const p = Math.min(1, Math.max(0, window.scrollY / max))
+      el.style.setProperty("--p", p.toFixed(4))
+    }
+    const measure = () => {
+      // Keep the tallest viewport height seen at this width, so the phone
+      // or tablet toolbar sliding in and out doesn't change the total.
+      if (window.innerWidth !== width) {
+        width = window.innerWidth
+        tallest = 0
+      }
+      tallest = Math.max(tallest, window.innerHeight, root.clientHeight)
+      max = Math.max(1, root.scrollHeight - tallest)
+      paint()
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(paint)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(document.body)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", measure)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", measure)
+      cancelAnimationFrame(frame)
+    }
+  }, [])
+  return <span ref={line} className="topbar__progress" aria-hidden="true" />
 }
 
 /** True once the page has scrolled away from the very top. */
