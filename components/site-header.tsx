@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState, useTransition, type MouseEven
 import { Moon, Sun } from "@phosphor-icons/react"
 import type { Lang } from "@/content/types"
 import type { Dict } from "@/i18n/en"
-import type { PageSection } from "@/lib/sections"
 import { Logo } from "@/components/logo"
 import { Navigator } from "@/components/navigator"
 
@@ -25,14 +24,11 @@ export function SiteHeader({
   t,
   firstName,
   lastName,
-  sections,
 }: {
   lang: Lang
   t: Nav
   firstName: string
   lastName: string
-  /** Sections of the home page, offered in the navigator while on it. */
-  sections: PageSection[]
 }) {
   // On the server this is the internal path (/en/projects); in the browser
   // the visible one (/projects). Strip the language so both agree.
@@ -110,7 +106,6 @@ export function SiteHeader({
     window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" })
   }
 
-  const onThisPage = pathname === "/" ? sections : []
 
   return (
     <>
@@ -182,7 +177,6 @@ export function SiteHeader({
         name={name}
         pages={links.map((l) => ({ href: l.href, label: t[l.key] }))}
         isActive={isActive}
-        sections={onThisPage}
       />
     </>
   )

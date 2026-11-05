@@ -7,8 +7,9 @@ import { Rise } from "@/components/motion/rise"
 /** The "got something to build?" block that closes most pages. */
 export function CtaCard({ lang }: { lang: Lang }) {
   const t = getDict(lang).cta
+  const label = getDict(lang).nav.contact
   return (
-    <section id="get-in-touch" className="wrap section" aria-labelledby="cta-title">
+    <section id="get-in-touch" data-section={label} className="wrap section" aria-labelledby="cta-title">
       <div className="cta stage" data-reveal>
         <Rise id="cta-title" text={t.title} className="cta__title" />
         <div className="cta__side">

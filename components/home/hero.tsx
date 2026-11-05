@@ -22,7 +22,7 @@ export function Hero({ lang }: { lang: Lang }) {
 
   return (
     <div className="wrap">
-    <section id="intro" className="stage hero" aria-labelledby="hero-name">
+    <section id="intro" data-section={getDict(lang).nav.intro} className="stage hero" aria-labelledby="hero-name">
       <h1 id="hero-name" className="name">
         <span className="name__line name__line--main">
           <span>{main}</span>

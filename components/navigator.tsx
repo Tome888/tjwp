@@ -1,10 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef, type CSSProperties } from "react"
+import { useEffect, useRef, useState, type CSSProperties } from "react"
 import { ArrowRight, X } from "@phosphor-icons/react"
 import type { Dict } from "@/i18n/en"
-import type { PageSection } from "@/lib/sections"
 import { Logo } from "@/components/logo"
 
 type Nav = Dict["nav"]
@@ -16,7 +15,8 @@ export interface NavPage {
 }
 
 /**
- * The menu: the pages, and the sections of the page you're on. Nothing else
+ * The menu: the pages, and the sections of the page you're on (any element
+ * in the page with an id and data-section="Label"). Nothing else
  * (language and theme live in the bar, motion in the footer). Opens with the
  * menu button or ⌘K / Ctrl+K / "/", growing out of the button that was pressed.
  */
@@ -28,7 +28,6 @@ export function Navigator({
   name,
   pages,
   isActive,
-  sections,
 }: {
   open: boolean
   origin: { x: number; y: number } | null
@@ -37,12 +36,18 @@ export function Navigator({
   name: string
   pages: NavPage[]
   isActive: (href: string) => boolean
-  sections: PageSection[]
 }) {
   const panel = useRef<HTMLDivElement>(null)
+  const [sections, setSections] = useState<Array<{ id: string; label: string }>>([])
 
   useEffect(() => {
     if (!open) return
+    setSections(
+      Array.from(document.querySelectorAll<HTMLElement>("#main [data-section][id]")).map((el) => ({
+        id: el.id,
+        label: el.dataset.section ?? "",
+      })),
+    )
     const id = requestAnimationFrame(() => panel.current?.focus({ preventScroll: true }))
     return () => cancelAnimationFrame(id)
   }, [open])
@@ -51,7 +56,7 @@ export function Navigator({
   const later = (fn: () => void) => window.setTimeout(fn, 40) // after the scroll lock lifts
 
   const style = (origin ? { "--ox": `${origin.x}px`, "--oy": `${origin.y}px` } : {}) as Vars
-  const present = open ? sections.filter((s) => document.getElementById(s.id)) : sections
+  const present = sections
 
   return (
     <div

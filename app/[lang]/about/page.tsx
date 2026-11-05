@@ -28,7 +28,7 @@ export default async function AboutPage(props: LangParams) {
         <Rise as="h1" on="load" text={t.title} className="large-title" />
       </section>
 
-      <section className="wrap pb-14 md:pb-22">
+      <section id="story" data-section={t.storyLabel} className="wrap pb-14 md:pb-22">
         <div className="about-grid">
           <div>
             <div className="portrait enter">
@@ -69,7 +69,7 @@ export default async function AboutPage(props: LangParams) {
       </section>
 
       <div className="band band--shade">
-      <section className="wrap section" aria-labelledby="skills-title">
+      <section id="skills" data-section={t.skillsLabel} className="wrap section" aria-labelledby="skills-title">
         <SectionHead id="skills-title" title={t.skillsLabel} />
         <dl className="skills" data-reveal>
           {about.skills.map((g, i) => (
@@ -83,7 +83,7 @@ export default async function AboutPage(props: LangParams) {
       </section>
       </div>
 
-      <section className="wrap section" aria-labelledby="edu-title">
+      <section id="education" data-section={t.educationLabel} className="wrap section" aria-labelledby="edu-title">
         <SectionHead id="edu-title" title={t.educationLabel} />
         <ol className="rows" data-reveal>
           {about.education.map((e, i) => (
@@ -97,7 +97,7 @@ export default async function AboutPage(props: LangParams) {
         </ol>
       </section>
 
-      <section className="wrap section" aria-labelledby="links-title">
+      <section id="elsewhere" data-section={t.linksLabel} className="wrap section" aria-labelledby="links-title">
         <SectionHead id="links-title" title={t.linksLabel} />
         <ul className="rows" data-reveal>
           <li>
