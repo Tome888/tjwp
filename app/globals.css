@@ -554,65 +554,6 @@
     transform: none;
   }
 
-  /* Desktop links. An orange pill glides to whichever link is under the
-     pointer, and back to the current page when it leaves. */
-  .nav {
-    position: relative;
-    display: none;
-    align-items: center;
-    margin-right: 6px;
-  }
-  /* Only with a mouse or trackpad. Tablets get just the Menu button,
-     so the bar never shows two menus at once. */
-  @media (min-width: 760px) and (hover: hover) and (pointer: fine) {
-    .nav {
-      display: flex;
-    }
-  }
-  .nav a {
-    position: relative;
-    z-index: 1;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 15px;
-    font-weight: 500;
-    white-space: nowrap;
-    color: var(--ink-2);
-    transition: color 0.25s;
-  }
-  .nav a:hover {
-    color: var(--ink);
-  }
-  .nav a[data-lit] {
-    color: var(--on-accent);
-  }
-  .nav__blob {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    height: 36px;
-    width: var(--w, 0px);
-    margin-top: -18px;
-    border-radius: 999px;
-    background: var(--accent);
-    box-shadow: 0 6px 20px -6px color-mix(in srgb, var(--orange) 80%, transparent);
-    transform: translateX(var(--x, 0px));
-    opacity: 0;
-    transition:
-      transform 0.45s var(--ease-out),
-      width 0.45s var(--ease-out),
-      opacity 0.2s;
-  }
-  .nav__blob[data-ready] {
-    opacity: 1;
-  }
-  .nav__blob[data-snap] {
-    transition: opacity 0.2s;
-  }
-  html[data-motion="reduced"] .nav__blob {
-    transition: opacity 0.2s;
-  }
-
   .tools {
     display: flex;
     align-items: center;

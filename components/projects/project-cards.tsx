@@ -17,6 +17,7 @@ export interface CardItem {
   role?: string
   status?: string
   link?: string
+  linkLabel?: string
   image?: string
   gallery?: Array<{ src: string; caption: string }>
 }
@@ -132,7 +133,7 @@ function ProjectSheet({
           <div className="sheet__actions">
             {shown.link ? (
               <a href={shown.link} target="_blank" rel="noopener noreferrer" className="btn btn--fill">
-                {t.visit}
+                {shown.linkLabel ?? t.visit}
                 <ArrowUpRight weight="bold" aria-hidden="true" />
               </a>
             ) : null}

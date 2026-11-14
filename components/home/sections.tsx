@@ -58,7 +58,7 @@ export function Products({ lang }: { lang: Lang }) {
               <p className="product__text">{product.summary[lang]}</p>
               {product.link ? (
                 <a href={product.link} target="_blank" rel="noopener noreferrer" className="btn btn--tinted mt-6">
-                  {t.visit}
+                  {product.linkLabel ?? t.visit}
                   <ArrowUpRight weight="bold" aria-hidden="true" />
                 </a>
               ) : null}
