@@ -63,6 +63,8 @@ export interface Product {
   status?: Text
   /** Full URL. Optional, the name is not a link without it. */
   link?: string
+  /** Text on the link button, e.g. "Instagram". Optional, defaults to "Visit". */
+  linkLabel?: string
   /** Image file in /public/projects/. Optional. */
   image?: string
 }
@@ -80,6 +82,8 @@ export interface Project {
   status?: Text
   /** Full URL to the live project. Optional. */
   link?: string
+  /** Text on the link button, e.g. "GitHub". Optional, defaults to "Visit site". */
+  linkLabel?: string
   /** Image file in /public/projects/, e.g. "pabau.png". Optional. */
   image?: string
   /**

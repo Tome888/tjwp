@@ -181,6 +181,8 @@ export const site: Site = {
         mk: "SaaS за ресторани. Гостите скенираат QR-код на масата и нарачуваат од својот телефон.",
       },
       status: { en: "In development", mk: "Во развој" },
+      link: "https://www.instagram.com/get.waitless/",
+      linkLabel: "Instagram",
     },
   ],
 
@@ -305,79 +307,20 @@ export const site: Site = {
       image: "vibe-strings.png",
     },
     {
-      title: { en: "RPS Online Game", mk: "RPS Online Game" },
+      title: { en: "Who Unfollowed?", mk: "Who Unfollowed?" },
       summary: {
-        en: "Multiplayer Web Game",
-        mk: "Веб Игра за Повеќе Играчи",
+        en: "Chrome extension that shows who doesn't follow you back on Instagram.",
+        mk: "Chrome екстензија што покажува кој не те следи назад на Instagram.",
       },
       details: {
-        en: "This is a online multiplayer Rock, Paper, Scissors game where you can invite your friends to play 1v1. It is developed with Next.Js and Express.js using WebSockets.",
-        mk: "Ова е online multiplayer игра каде можете да ги поканете вашите пријатели и да играте лист, камен, ножичка еден против друг. Изградена е со NextJs и Express.js со WebSockets.",
+        en: "A privacy-focused Chrome extension that shows who doesn't follow you back on Instagram and, across scans, who unfollowed you. It reads the same data Instagram's own follower lists use, so a scan takes seconds and matches accounts by their permanent ID. Every scan is saved locally and compared with the next one. It handles rate limits with an automatic pause and resume, and won't record fake unfollowers from an incomplete scan. Search, filters, copy and CSV export are built in. Everything runs in the browser and no data leaves it.",
+        mk: "Chrome екстензија фокусирана на приватност што покажува кој не те следи назад на Instagram и, низ повеќе скенирања, кој престанал да те следи. Ги чита истите податоци што ги користат листите на следбеници во самиот Instagram, па скенирањето трае неколку секунди, а профилите се споредуваат по нивниот траен ID. Секое скенирање се зачувува локално и се споредува со следното. Автоматски паузира и продолжува кога Instagram ги ограничува барањата, и не запишува лажни отследувања од нецелосно скенирање. Има пребарување, филтри, копирање и извоз во CSV. Сè работи во прелистувачот и ниту еден податок не го напушта.",
       },
-      tags: ["nextJS", "fullStack", "webSocket"],
+      tags: ["javaScript", "chromeExtension"],
       role: { en: "Personal project", mk: "Личен проект" },
-      link: "https://rps-online-game-pi.vercel.app/",
-      image: "rps-online.png",
-    },
-    {
-      title: { en: "Wordle-Clone", mk: "Wordle-Clone" },
-      summary: {
-        en: "Interactive Logic Game",
-        mk: "Интерактивна Логичка Игра",
-      },
-      details: {
-        en: "This is a Wordle clone built with React and TypeScript, offering a fun and interactive word-guessing game. Players can guess words of varying lengths, with feedback on each guess displayed in real-time. The game includes customizable settings such as the number of attempts and word length, with visual feedback (green for correct, yellow for wrong letter position) to help players. A confetti celebration occurs upon winning, adding an extra layer of excitement. The app also features a responsive design, ensuring a smooth experience across devices.",
-        mk: "Ова е клон на Wordle изграден со React и TypeScript, забавна и интерактивна игра за погодување зборови. Играчите можат да погодуваат зборови со различна должина. Играта вклучува поставки како бројот на обиди и должината на зборовите, со визуелни `feedback` (зелено за правилен одговор, жолто за погрешна позиција на буквата) кои помагаат на играчите да го погодат зборот. По победата, се активира конфети прослава, додавајќи дополнителна возбуда. Апликацијата има и респонзивен дизајн, кој обезбедува беспрекорно искуство на сите уреди.",
-      },
-      tags: ["reactTS", "challenge", "responsive"],
-      role: { en: "Personal project", mk: "Личен проект" },
-      link: "https://my-wordle-clone-tj.netlify.app/",
-      image: "wordle-clone.png",
-    },
-    {
-      title: { en: "Snake Game", mk: "Snake Game" },
-      summary: {
-        en: "Arcade Game Simulation",
-        mk: "Аркадна Симулација",
-      },
-      details: {
-        en: "I challenged myself to create an arcade game in just one day. The game features a render state similar to how a real game engine functions, but in a simpler version. Built with vanilla JavaScript, CSS, and HTML, it includes core game mechanics such as dynamic rendering, collision detection, and smooth gameplay. Despite the tight deadline, I was able to create a game that mimics the structure of a real game engine while keeping it lightweight and simple. It was an excellent exercise in game development and problem-solving.",
-        mk: "Си поставив предизвик да изградам аркадна игра за само еден ден. Играта има рендер состојба слична на тоа како што функционира вистински геим енџин, но во поедноставена верзија. Изградена со ванила JavaScript, CSS и HTML, вклучува основни механики на играта како динамичко рендерирање, детекција на колизии и слично. Без разлика на краткиот рок, успеав да создадам игра која ги имитира структурите на вистински геим енџин. Тоа беше одлична вежба за развој на игри и решавање на проблеми.",
-      },
-      tags: ["javaScript", "responsive", "challenge"],
-      role: { en: "Personal project", mk: "Личен проект" },
-      link: "https://snake-arcade-game-tj.netlify.app/",
-      image: "snake-game.png",
-    },
-    {
-      title: { en: "E-commerce shop", mk: "E-commerce shop" },
-      summary: {
-        en: "Server-Side Rendered E-Shop",
-        mk: "Е-Продавница со Серверско Рендерирање",
-      },
-      details: {
-        en: "This is a simple eCommerce shop built with Next.js, featuring search, filtering, and enhanced SEO through the use of getServerSideProps and getStaticProps. The website includes a homepage, search page, blog page, about page, individual blog posts, and individual product pages.",
-        mk: "Ова е едноставна eCommerce продавница изградена со Next.js, која вклучува пребарување, филтрирање и подобрена SEO оптимизација преку користење на getServerSideProps и getStaticProps. Веб-страницата вклучува почетна страница, страница за пребарување, блог страница, страница за „за нас“, индивидуални блог постови и страници за поединечни производи.",
-      },
-      tags: ["nextJS", "responsive"],
-      role: { en: "Personal project", mk: "Личен проект" },
-      link: "https://e-com-deploy-verc.vercel.app",
-      image: "ecommerce-shop.png",
-    },
-    {
-      title: { en: "MAHR Platform", mk: "MAHR Platform" },
-      summary: {
-        en: "Full-Stack Academy Capstone",
-        mk: "Финална Проектна Задача",
-      },
-      details: {
-        en: "This is the final project from the React/Next.js module at Brainster. It includes filters, search functionality, and a dynamic calendar that adjusts based on data. To make the project more dynamic, I decided to add a backend for the first time, using Express.js and a db.json database. The backend handles user registration, login via JWT, and allows users to update credentials or comment on blog posts, with comments saved to the database. I also added support for dual languages: English and Macedonian.",
-        mk: "Ова е финалниот проект од модулот React/Next.js на Brainster. Вклучува филтри, функција за пребарување и динамичен календар кој се прилагодува според податоците. За да го направам проектот подинамичен, одлучив за првпат да додадам backend, користејќи Express.js и db.json база на податоци. Backend-от управува со регистрација на корисници, најавување преку JWT, и им овозможува на корисниците да ги ажурираат своите информации или да коментираат на блог-постови, при што коментарите се зачувуваат во базата. Исто така, додадов поддршка за два јазика: англиски и македонски.",
-      },
-      tags: ["nextJS", "fullStack", "expressJS"],
-      role: { en: "Brainster capstone", mk: "Завршен проект, Brainster" },
-      link: "https://mahr-platform-verc.vercel.app",
-      image: "mahr-platform.png",
+      link: "https://github.com/Tome888/unfollowers_extention",
+      linkLabel: "GitHub",
+      image: "who-unfollowed.webp",
     },
   ],
 

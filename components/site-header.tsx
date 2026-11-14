@@ -120,8 +120,6 @@ export function SiteHeader({
               </span>
             </Link>
 
-            <GlideNav t={t} lang={lang} isActive={isActive} onNav={onNav} />
-
             <div className="tools">
               <button
                 type="button"
@@ -179,79 +177,6 @@ export function SiteHeader({
         isActive={isActive}
       />
     </>
-  )
-}
-
-/**
- * Desktop links with an orange pill that glides to the link under the
- * pointer (or keyboard focus) and settles back on the current page.
- */
-function GlideNav({
-  t,
-  lang,
-  isActive,
-  onNav,
-}: {
-  t: Nav
-  lang: Lang
-  isActive: (href: string) => boolean
-  onNav: (e: MouseEvent, href: string) => void
-}) {
-  const nav = useRef<HTMLElement>(null)
-  const blob = useRef<HTMLSpanElement>(null)
-  const placed = useRef(false)
-  const [hover, setHover] = useState<string | null>(null)
-  const current = links.find((l) => isActive(l.href))?.href ?? null
-  const lit = hover ?? current
-
-  useEffect(() => {
-    const el = nav.current
-    const b = blob.current
-    if (!el || !b) return
-    const place = () => {
-      const target = lit ? el.querySelector<HTMLElement>(`a[data-href="${lit}"]`) : null
-      if (!target || !target.offsetWidth) {
-        delete b.dataset.ready
-        placed.current = false
-        return
-      }
-      // The first placement jumps into position instead of sliding in from 0.
-      if (!placed.current) b.dataset.snap = ""
-      b.style.setProperty("--x", `${target.offsetLeft}px`)
-      b.style.setProperty("--w", `${target.offsetWidth}px`)
-      b.dataset.ready = ""
-      if (!placed.current) {
-        placed.current = true
-        requestAnimationFrame(() => requestAnimationFrame(() => delete b.dataset.snap))
-      }
-    }
-    place()
-    // Fonts loading or a language switch change the widths.
-    const ro = new ResizeObserver(place)
-    ro.observe(el)
-    el.querySelectorAll("a").forEach((a) => ro.observe(a))
-    return () => ro.disconnect()
-  }, [lit, lang])
-
-  return (
-    <nav ref={nav} aria-label={t.label} className="nav" onMouseLeave={() => setHover(null)}>
-      <span ref={blob} className="nav__blob" aria-hidden="true" />
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          data-href={link.href}
-          data-lit={lit === link.href ? "" : undefined}
-          aria-current={isActive(link.href) ? "page" : undefined}
-          onMouseEnter={() => setHover(link.href)}
-          onFocus={() => setHover(link.href)}
-          onBlur={() => setHover(null)}
-          onClick={(e) => onNav(e, link.href)}
-        >
-          {t[link.key]}
-        </Link>
-      ))}
-    </nav>
   )
 }
 
