@@ -18,6 +18,7 @@ export interface CardItem {
   status?: string
   link?: string
   linkLabel?: string
+  moreLinks?: Array<{ label: string; url: string }>
   image?: string
   gallery?: Array<{ src: string; caption: string }>
 }
@@ -137,6 +138,12 @@ function ProjectSheet({
                 <ArrowUpRight weight="bold" aria-hidden="true" />
               </a>
             ) : null}
+            {shown.moreLinks?.map((l) => (
+              <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="btn btn--fill">
+                {l.label}
+                <ArrowUpRight weight="bold" aria-hidden="true" />
+              </a>
+            ))}
             <Link href="/contact?topic=project" className="btn btn--tinted">
               {t.similar}
             </Link>

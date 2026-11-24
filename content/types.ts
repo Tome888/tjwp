@@ -84,6 +84,8 @@ export interface Project {
   link?: string
   /** Text on the link button, e.g. "GitHub". Optional, defaults to "Visit site". */
   linkLabel?: string
+  /** More link buttons next to the first one, e.g. a second app store. Optional. */
+  moreLinks?: Array<{ label: string; url: string }>
   /** Image file in /public/projects/, e.g. "pabau.png". Optional. */
   image?: string
   /**
