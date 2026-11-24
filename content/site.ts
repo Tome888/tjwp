@@ -20,6 +20,7 @@
  *       - `status` → e.g. "In development", shown as a small badge
  *       - no `image` → a typographic placeholder is shown instead
  *       - no `link`  → the "Visit" button is hidden
+ *       - `moreLinks` → extra buttons, e.g. [{ label: "App Store", url: "..." }]
  *       - `featured: true` → also shown as a big card on the home page
  *         (the first 6 featured projects are used)
  *       - `gallery` → extra screens, shown as a swipeable strip when the
@@ -218,7 +219,9 @@ export const site: Site = {
       },
       tags: ["expo", "reactNative", "expressJS", "mobile"],
       role: { en: "Client project · iOS & Android", mk: "Проект за клиент · iOS и Android" },
-      status: { en: "In closed testing", mk: "Во затворено тестирање" },
+      link: "https://play.google.com/store/apps/details?id=mk.najdiprevoz.mobile",
+      linkLabel: "Google Play",
+      moreLinks: [{ label: "App Store", url: "https://apps.apple.com/app/id6802355966" }],
       image: "najdiprevoz.webp",
       gallery: [
         {
